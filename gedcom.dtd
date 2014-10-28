@@ -1,0 +1,52 @@
+<!ELEMENT document (infos,individuals,families)>
+  <!ELEMENT infos (source?,date?,file?)>
+    <!ELEMENT source (#PCDATA)>
+    <!ELEMENT file (#PCDATA)>
+
+<!ELEMENT individuals (individual*)>
+  <!-- INDI -->
+  <!ELEMENT individual (name?,title?,sex?,birth?,baptism?,death?,burial?,parent-of?,children-of?)>
+    <!ATTLIST individual id ID #REQUIRED>
+    <!-- SEX -->
+    <!ATTLIST individual sex (male|female|undetermined) #IMPLIED>
+    <!-- NAME -->
+    <!ELEMENT name (CDATA)>
+    <!-- TITL -->
+    <!ELEMENT title (CDATA)>
+    <!-- BIRT -->
+    <!ELEMENT birth (place?,date?)>
+    <!-- CHR -->
+    <!ELEMENT baptism (place?,date?)>
+    <!-- DEAT -->
+    <!ELEMENT death (place?,date?)>
+    <!-- BURI -->
+    <!ELEMENT burial (place?,date?)>
+    <!ELEMENT parent-ofs (parent-of+)>
+      <!-- FAMS: -->
+      <!ELEMENT parent-of EMPTY>
+        <!ATTLIST parent-of ref IDREF #REQUIRED>
+    <!-- FAMC: -->
+    <!ELEMENT children-of EMPTY>
+      <!ATTLIST children-of ref IDREF #REQUIRED>
+
+<!ELEMENT families (family*)>
+  <!-- FAM -->
+  <!ELEMENT family (marriage?,divorce?,husband?,wife?,children?)>
+    <!ATTLIST family id ID #REQUIRED>
+    <!-- MARR -->
+    <!ELEMENT marriage (date?,place?)>
+    <!-- DIV -->
+    <!ELEMENT divorce (date?,place?)>
+    <!-- HUSB -->
+    <!ELEMENT husband EMPTY>
+      <!ATTLIST husband ref IDREF #REQUIRED>
+    <!-- WIFE -->
+    <!ELEMENT wife EMPTY>
+      <!ATTLIST wife ref IDREF #REQUIRED>
+    <!ELEMENT children (child*)>
+      <!-- CHIL -->
+      <!ELEMENT child EMPTY>
+        <!ATTLIST child ref IDREF #REQUIRED>
+
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT place (#PCDATA)>
