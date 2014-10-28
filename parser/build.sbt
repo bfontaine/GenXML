@@ -7,3 +7,5 @@ scalaVersion := "2.10.3"
 libraryDependencies += "org.scalatest" % "scalatest_2.10" % "2.0" % "test"
 
 libraryDependencies += "org.gedcom4j" % "gedcom4j" % "2.1.8"
+
+libraryDependencies += "org.apache.commons" % "commons-io" % "1.3.2"
