@@ -5,7 +5,7 @@
 
 <!ELEMENT individuals (individual*)>
   <!-- INDI -->
-  <!ELEMENT individual (name?,title?,sex?,birth?,baptism?,death?,burial?,parent-of?,children-of?)>
+  <!ELEMENT individual (name?,title?,birth?,baptism?,death?,burial?,parent-of?,children-of?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!-- SEX -->
     <!ATTLIST individual sex (male|female|undetermined) #IMPLIED>
