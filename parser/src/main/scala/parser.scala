@@ -4,26 +4,40 @@ import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import scala.io.Source
 import scala.collection.JavaConverters._
+import scala.xml._
 
 import org.gedcom4j.parser.GedcomParser
 
 object GenParser {
 
-  val nonEmptyLineRegExp = "\\S".r.pattern.matcher _
+  val idLimitersRegExp = "(^@|@$)".r
+
+  //def individual2xml(id : String, )
 
   /**
    * Read a GEDCOM stream and return a 
    **/
-  def convertStream(stream : BufferedInputStream) {
+  def convertStream(stream : BufferedInputStream) : Elem = {
     val gp = new GedcomParser()
     gp.load(stream)
 
-    // tests
-    gp.gedcom.individuals.asScala.foreach {case (k, _) =>
-      println(<individual>{k}</individual>)
-    }
-
-    // TODO
+    <document>
+      <infos></infos>
+      <individuals>
+        {
+          for ((k, indi) <- gp.gedcom.individuals.asScala) yield {
+            List(
+              <individual id={ idLimitersRegExp.replaceAllIn(k, "") }>
+                TODO
+              </individual>,
+              "\n")
+          }
+        }
+      </individuals>
+      <families>{
+        // TODO
+      }</families>
+    </document>
   }
 
   /**
