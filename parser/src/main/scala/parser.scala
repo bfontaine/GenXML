@@ -31,6 +31,8 @@ object GenParser {
    **/
   def readFile(filename : String) : BufferedInputStream = {
     val source = Source.fromFile(filename)
+
+    // remove {lead,trail}ing spaces as well as empty newlines
     val content = "\\s*\n\\s+".r.replaceAllIn(source.mkString, "\n")
 
     new BufferedInputStream(new ByteArrayInputStream(content.getBytes()))
