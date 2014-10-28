@@ -1,21 +1,22 @@
 package edu.parisdiderot.m2.xml.galichetfontaine
 
+import java.io.BufferedInputStream
+import java.io.ByteArrayInputStream
+import scala.io.Source
 import scala.collection.JavaConverters._
 
 import org.gedcom4j.parser.GedcomParser
-import org.apache.commons.io.FilenameUtils
 
 object GenParser {
 
+  val nonEmptyLineRegExp = "\\S".r.pattern.matcher _
+
   /**
-   * Read a Gedcom file whose path is given as an argument, and produce an XML
-   * file with this file's basename and the XML extension in the current
-   * directory.
+   * Read a GEDCOM stream and return a 
    **/
-  def convertFile(filename : String) {
-    val destname = FilenameUtils.getBaseName(filename) + ".xml"
+  def convertStream(stream : BufferedInputStream) {
     val gp = new GedcomParser()
-    gp.load(filename)
+    gp.load(stream)
 
     // tests
     gp.gedcom.individuals.asScala.foreach {case (k, _) =>
@@ -24,6 +25,19 @@ object GenParser {
 
     // TODO
   }
+
+  /**
+   * Read a file, fix non-standard stuff and return a stream
+   **/
+  def readFile(filename : String) : BufferedInputStream = {
+    val source = Source.fromFile(filename)
+    val content = "\\s*\n\\s+".r.replaceAllIn(source.mkString, "\n")
+
+    new BufferedInputStream(new ByteArrayInputStream(content.getBytes()))
+  }
+
+  def convertFile(filename : String) =
+    convertStream(readFile(filename))
 
   def main(args : Array[String]) {
 
