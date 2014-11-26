@@ -5,6 +5,7 @@ import scala.xml._
 
 import org.gedcom4j.parser.GedcomParser
 import org.gedcom4j.model._
+import org.gedcom4j.model.IndividualEventType._
 
 object GenParser {
 
@@ -12,6 +13,9 @@ object GenParser {
 
   def idToString(k : String) =
     idLimitersRegExp.replaceAllIn(k, "")
+
+  def eventTypeToString(t : IndividualEventType) =
+    t.display.toLowerCase
 
   def makeDocumentXML(g : Gedcom) =
     <document>
@@ -34,8 +38,11 @@ object GenParser {
 
   def makeIndividualXML(key : String, individual : Individual) =
     <individual id={key}>
-      // TODO name, birthdate, etc
+      <!-- TODO name, death, etc -->
       <sex>{ individual.sex }</sex>
+      { makeEventXML(BIRTH, individual.events) }
+      { makeEventXML(DEATH, individual.events) }
+      { makeEventXML(BURIAL, individual.events) }
       { makeStringsListXML("email", individual.emails) }
       { makeStringsListXML("faxNumber", individual.faxNumbers) }
       { makeStringsListXML("url", individual.wwwUrls) }
@@ -52,21 +59,32 @@ object GenParser {
 
   def makeFamilyXML(key : String, family : Family) =
     <family id={key}>
-      // TODO
+      <!-- TODO -->
     </family>
 
   def makeAddressXML(addr : Address) =
-    if (addr == null)
-      ""
-    else
-    <address>
-      <addr1>{ addr.addr1 }</addr1>
-      <addr2>{ addr.addr2 }</addr2>
-      <postalCode>{ addr.postalCode }</postalCode>
-      <city>{ addr.city }</city>
-      <stateOrProvince>{ addr.stateProvince }</stateOrProvince>
-      <country>{ addr.country }</country>
-    </address>
+    if (addr != null)
+      <address>
+        <addr1>{ addr.addr1 }</addr1>
+        <addr2>{ addr.addr2 }</addr2>
+        <postalCode>{ addr.postalCode }</postalCode>
+        <city>{ addr.city }</city>
+        <stateOrProvince>{ addr.stateProvince }</stateOrProvince>
+        <country>{ addr.country }</country>
+      </address>
+
+  def makeEventXML(type_ : IndividualEventType,
+                   events : java.util.List[IndividualEvent]) =
+    events.asScala.find(_.`type` == type_) match {
+      case Some(ev) =>
+        <xml>
+          <date>{ev.date}</date>
+          { if (type_ == DEATH && ev.cause != null) <cause>{ev.cause}</cause> }
+          { if (ev.place != null) <place>{ev.place.placeName}</place> }
+          <!-- TODO -->
+        </xml>.copy(label=eventTypeToString(type_))
+      case None => ""
+    }
 
   /**
    * Return an XML '{baseTag}s' element that contains one '{baseTag}' element
@@ -80,7 +98,7 @@ object GenParser {
   def makeStringsListXML(baseTag : String,
                          lst : java.util.List[StringWithCustomTags]) =
     <xml>{
-      lst.asScala.map((s) => <xml>{s}</xml>.copy(label = baseTag))
+      lst.asScala.map((s) => <xml>{s}</xml>.copy(label=baseTag))
     }</xml>.copy(label = baseTag + "s")
 
   def parseFile(filename : String) = {
