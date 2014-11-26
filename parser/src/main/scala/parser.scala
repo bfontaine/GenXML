@@ -1,8 +1,5 @@
 package edu.parisdiderot.m2.xml.galichetfontaine
 
-import java.io.BufferedInputStream
-import java.io.ByteArrayInputStream
-import scala.io.Source
 import scala.collection.JavaConverters._
 import scala.xml._
 
@@ -17,9 +14,9 @@ object GenParser {
   /**
    * Read a GEDCOM stream and return a 
    **/
-  def convertStream(stream : BufferedInputStream) : Elem = {
+  def convertFile(filename : String) : Elem = {
     val gp = new GedcomParser()
-    gp.load(stream)
+    gp.load(filename)
 
     <document>
       <infos></infos>
@@ -39,21 +36,6 @@ object GenParser {
       }</families>
     </document>
   }
-
-  /**
-   * Read a file, fix non-standard stuff and return a stream
-   **/
-  def readFile(filename : String) : BufferedInputStream = {
-    val source = Source.fromFile(filename)
-
-    // remove {lead,trail}ing spaces as well as empty newlines
-    val content = "\\s*\n\\s+".r.replaceAllIn(source.mkString, "\n")
-
-    new BufferedInputStream(new ByteArrayInputStream(content.getBytes()))
-  }
-
-  def convertFile(filename : String) =
-    convertStream(readFile(filename))
 
   def main(args : Array[String]) {
 
