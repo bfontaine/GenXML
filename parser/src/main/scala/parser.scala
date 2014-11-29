@@ -1,5 +1,7 @@
 package org.genxml
 
+import GedcomConverters._
+
 import scala.collection.JavaConverters._
 import scala.xml._
 
@@ -9,52 +11,14 @@ import org.gedcom4j.model.IndividualEventType._
 
 object GenParser {
 
-  val idLimitersRegExp = "(^@|@$)".r
-
-  /**
-   * Convert a GEDCOM id into a string. It currently only removes leading and
-   * trailing @'s.
-   * @param k the id
-   **/
-  def idToString(k : String) =
-    idLimitersRegExp.replaceAllIn(k, "")
-
-  /**
-   * Return a string describing an individual event type, usable as an XML tag
-   * @param t the event type
-   **/
-  def eventTypeToString(t : IndividualEventType) =
-    t.display.toLowerCase
-
-  /**
-   * Convert a GEDCOM document into an XML element
-   * @param g the GEDCOM document, usually obtained by parsing a file
-   **/
-  def makeDocumentXML(g : Gedcom) =
-    <document>
-      <infos></infos>
-      <individuals>
-        {
-          g.individuals.asScala.map { case (_, indi) =>
-            makeIndividualXML(indi)
-          }
-        }
-      </individuals>
-      <families>
-        {
-          g.families.asScala.map { case (_, fam) =>
-            makeFamilyXML(fam)
-          }
-        }
-      </families>
-    </document>
-
   /**
    * Convert an individual document into an XML element
    * @param individual the GEDCOM individual
    **/
   def makeIndividualXML(individual : Individual) =
-    <individual id={idToString(individual.xref)}>
+    individual.toXML
+  /*
+    <individual id={individual.xref.toStringId}>
       <!-- TODO name, death, etc -->
       <sex>{ individual.sex }</sex>
       { makeEventXML(BIRTH, individual.events) }
@@ -64,7 +28,7 @@ object GenParser {
       { makeStringsListXML("faxNumber", individual.faxNumbers) }
       { makeStringsListXML("url", individual.wwwUrls) }
       { makeStringsListXML("phone", individual.phoneNumbers) }
-      { makeAddressXML(individual.address) }
+      { individual.address.toXML }
       <notes>{
         individual.notes.asScala.map(n =>
           <note>
@@ -73,30 +37,7 @@ object GenParser {
         )
       }</notes>
     </individual>
-
-  /**
-   * Convert a family document into an XML element
-   * @param family the GEDCOM family
-   **/
-  def makeFamilyXML(family : Family) =
-    <family id={idToString(family.xref)}>
-      <!-- TODO -->
-    </family>
-
-  /**
-   * Convert a GEDCOM address into an XML element
-   * @param addr the GEDCOM address
-   **/
-  def makeAddressXML(addr : Address) =
-    if (addr != null)
-      <address>
-        <addr1>{ addr.addr1 }</addr1>
-        <addr2>{ addr.addr2 }</addr2>
-        <postalCode>{ addr.postalCode }</postalCode>
-        <city>{ addr.city }</city>
-        <stateOrProvince>{ addr.stateProvince }</stateOrProvince>
-        <country>{ addr.country }</country>
-      </address>
+  */
 
   /**
    * Convert an individual event into an XML element. It takes a type and a
@@ -113,7 +54,7 @@ object GenParser {
           { if (type_ == DEATH && ev.cause != null) <cause>{ev.cause}</cause> }
           { if (ev.place != null) <place>{ev.place.placeName}</place> }
           <!-- TODO -->
-        </xml>.copy(label=eventTypeToString(type_))
+        </xml>.copy(label=type_.title)
       case None => ""
     }
 
@@ -150,7 +91,7 @@ object GenParser {
    * @param filename
    **/
   def convertFile(filename : String) = {
-    val xml = makeDocumentXML(parseFile(filename))
+    val xml = parseFile(filename).toXML
     // 90 chars per line, 4-spaces indent
     val printer = new PrettyPrinter(90, 4)
     printer.format(xml)
