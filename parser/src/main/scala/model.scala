@@ -32,6 +32,8 @@ object GedcomConverters {
       idLimitersRegExp.replaceAllIn(id, "")
   }
 
+  implicit def any2bool(x : Any) = (x != null)
+
   /** Document **/
 
   implicit class GDocument(val g : Gedcom) extends XMLable {
@@ -48,14 +50,14 @@ object GedcomConverters {
   implicit class GIndividual(val individual : Individual) extends XMLable {
     def toXML =
       <individual id={individual.xref.toStringId}>
-        <!-- TODO name, death, etc -->
+        { individual.names.toXML }
         <sex>{ individual.sex }</sex>
         { individual.events.toXML }
         { individual.emails.toXML("email") }
         { individual.faxNumbers.toXML("faxNumber") }
         { individual.wwwUrls.toXML("url") }
         { individual.phoneNumbers.toXML("phone") }
-        { if (individual.address != null) individual.address.toXML }
+        { if (individual.address) individual.address.toXML }
         { individual.notes.toXML }
       </individual>
   }
@@ -89,8 +91,8 @@ object GedcomConverters {
     def toXML =
       <event type={ev.`type`.title}>
           <date>{ev.date}</date>
-          { if (ev.cause != null) <cause>{ev.cause}</cause> }
-          { if (ev.place != null) <place>{ev.place.placeName}</place> }
+          { if (ev.cause) <cause>{ev.cause}</cause> }
+          { if (ev.place) <place>{ev.place.placeName}</place> }
           <!-- TODO -->
       </event>
   }
@@ -110,6 +112,7 @@ object GedcomConverters {
 
   implicit class GNote(val note : Note) extends XMLable {
     def toXML =
+      // FIXME isn't called?
       <note>{ note.lines.asScala.mkString("\n") }</note>
   }
 
@@ -134,10 +137,30 @@ object GedcomConverters {
       </address>
   }
 
+  implicit class GPersoNames(val names : JList[PersonalName]) extends XMLable {
+    val n = names.asScala.toList
+    def toXML =
+      if (n.isEmpty)
+        <personalName/>
+      else
+        // get only the first name
+        names.asScala.toList.head.toXML
+  }
+
+  implicit class GPersoName(val name : PersonalName) extends XMLable {
+    def toXML =
+      { name.basic /* TODO parse by hand */ .toXML("personalName") }
+  }
+
   /** Others **/
 
   implicit class GCustomString(val s : StringWithCustomTags) extends
   XMLCustomTag {
+    def toXML =
+      new GString((if (s) s; else "").toString).toXML
+  }
+
+  implicit class GString(val s : String) extends XMLCustomTag {
     def toXML =
       <xml>{s}</xml>
   }
