@@ -35,7 +35,7 @@ $(EXE):
 	echo "java -jar $(JAR_DIR)/$(JAR) \$$1 \$$2" >> $@
 	chmod u+x $@
 
-tests: $(TESTS)
+tests: $(EXE) $(TESTS)
 	@./$(TESTS)
 
 clean:
