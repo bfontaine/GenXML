@@ -10,8 +10,6 @@
     <!ATTLIST individual id ID #REQUIRED>
     <!ELEMENT personalName (#PCDATA)>
     <!ELEMENT sex (M|F) #IMPLIED>
-    <!ELEMENT events (event*)>
-      <!ELEMENT event (date,cause?,place?)>
     <!ELEMENT emails (email*)>
       <!ELEMENT email (#PCDATA)>
     <!ELEMENT faxNumbers (faxNumber*)>
@@ -44,8 +42,10 @@
       <!ATTLIST wife xref IDREF #REQUIRED>
     <!ELEMENT child EMPTY>
       <!ATTLIST child xref IDREF #REQUIRED>
-    <!ELEMENT events (event*)>
-      <!ELEMENT event (date,cause?,place?)>
+
+<!ELEMENT events (event*)>
+  <!ELEMENT event (date,cause?,place?)>
+    <!ATTLIST event type (TODO)>
 
 <!ELEMENT cause (#PCDATA)>
 <!ELEMENT date (#PCDATA)>

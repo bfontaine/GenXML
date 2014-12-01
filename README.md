@@ -1,3 +1,3 @@
 # GenXML
 
-School Project
+Gedcom to XML converter (school project)
