@@ -4,6 +4,7 @@ VERSION=1.0
 
 JAR=$(PROJECT).jar
 EXE=$(PROJECT)
+TESTS=tests.sh
 
 SRC=parser
 SRCS=$(wildcard $(SRC)/src/main/scala/*.scala)
@@ -11,11 +12,13 @@ SRCS=$(wildcard $(SRC)/src/main/scala/*.scala)
 SCALA_VERSION=2.10
 SRC_JAR=$(SRC)/target/scala-$(SCALA_VERSION)/$(PROJECT)_$(SCALA_VERSION)-$(VERSION)-one-jar.jar
 
+JAR_DIR=$(shell pwd)
+
 CP=cp
 RM=rm -f
 SH=$(shell which sh)
 
-.PHONY: all clean mrproper
+.PHONY: all clean mrproper tests
 
 all: $(JAR) $(EXE)
 
@@ -29,8 +32,11 @@ $(SRC_JAR): $(SRCS)
 $(EXE):
 	$(RM) $@
 	echo "#! $(SH)" >> $@
-	echo "java -jar $(JAR) \$$1 \$$2" >> $@
+	echo "java -jar $(JAR_DIR)/$(JAR) \$$1 \$$2" >> $@
 	chmod u+x $@
+
+tests: $(TESTS)
+	@./$(TESTS)
 
 clean:
 	$(RM) $(EXE) $(JAR)
