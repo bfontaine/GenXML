@@ -45,7 +45,15 @@
 
 <!ELEMENT events (event*)>
   <!ELEMENT event (date,cause?,place?)>
-    <!ATTLIST event type (TODO)>
+    <!-- the DTD can't distinguish between family and individual events -->
+    <!ATTLIST event type (annulment|census|divorce|divorce_filed|engagement|
+                          event|marriage|marriage_banner|marriage_contract|
+                          marriage_license|marriage_settlement|
+                          adoption|arrival|baptism|bar_mitzvah|bas_mitzvah|
+                          birth|blessing|burial|census|christening|
+                          christening_adult|confirmation|cremation|death|
+                          emigration|first_communion|graduation|immigration|
+                          naturalization|ordination|probate|retirement|will) #REQUIRED>
 
 <!ELEMENT cause (#PCDATA)>
 <!ELEMENT date (#PCDATA)>
