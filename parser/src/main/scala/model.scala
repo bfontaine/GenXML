@@ -8,7 +8,6 @@ import scala.xml._
 
 import org.gedcom4j.parser.GedcomParser
 import org.gedcom4j.model._
-import org.gedcom4j.model.IndividualEventType._
 
 import GedcomConverters._
 
@@ -66,12 +65,14 @@ object GedcomConverters {
         { individual.names.toXML }
         <sex>{ individual.sex }</sex>
         { individual.events.toXML }
-        { individual.emails.toXML("email") }
-        { individual.faxNumbers.toXML("faxNumber") }
-        { individual.wwwUrls.toXML("url") }
-        { individual.phoneNumbers.toXML("phone") }
+        { if (individual.emails) individual.emails.toXML("email") }
+        { if (individual.faxNumbers) individual.faxNumbers.toXML("faxNumber") }
+        { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
+        { if (individual.phoneNumbers) individual.phoneNumbers.toXML("phone") }
         { if (individual.address) individual.address.toXML }
         { individual.notes.toXML }
+        { individual.familiesWhereChild.toXML }
+        { individual.familiesWhereSpouse.toXML }
         {
           val sts = individual.customTags.asScala.toList
           sts.filter(s => CUSTOM_TAGS.contains(s.tag)).map(_.toXML)
@@ -89,9 +90,17 @@ object GedcomConverters {
   /** Families **/
 
   implicit class GFamily(val family : Family) extends XMLable {
-    def toXML = // TODO
+    def toXML =
       <family id={family.xref.toStringId}>
-        <!-- TODO -->
+        { if (family.husband)
+            <husband xref={ family.husband.xref.toStringId } /> }
+        { if (family.wife)
+            <wife xref={ family.wife.xref.toStringId } /> }
+        {
+          family.children.asScala.toList.map(ch =>
+              <children xref={ch.xref.toStringId} />)
+        }
+        { family.events.toXML }
       </family>
   }
 
@@ -102,6 +111,33 @@ object GedcomConverters {
       </families>
   }
 
+  implicit class GenFamiliesWhereChild(val fams : JList[FamilyChild]) extends XMLable {
+    def toXML =
+      <familiesWhereChild>
+        { fams.asScala.toList.map(_.toXML) }
+      </familiesWhereChild>
+  }
+
+  implicit class GenFamiliesWhereSpouse(val fams : JList[FamilySpouse]) extends XMLable {
+    def toXML =
+      <familiesWhereSpouse>
+        { fams.asScala.toList.map(_.toXML) }
+      </familiesWhereSpouse>
+  }
+
+  class FamilyXref(val fam : Family) extends XMLable {
+    def toXML =
+      <family xref={fam.xref.toStringId} />
+  }
+
+  implicit class GenFamilyWhereChild(val fam : FamilyChild) extends XMLable {
+    def toXML = new FamilyXref(fam.family).toXML
+  }
+
+  implicit class GenFamilyWhereSpouse(val fam : FamilySpouse) extends XMLable {
+    def toXML = new FamilyXref(fam.family).toXML
+  }
+
   /** Events **/
 
   implicit class GIndividualEvent(val ev : IndividualEvent) extends XMLable {
@@ -110,7 +146,14 @@ object GedcomConverters {
           <date>{ev.date}</date>
           { if (ev.cause) <cause>{ev.cause}</cause> }
           { if (ev.place) <place>{ev.place.placeName}</place> }
-          <!-- TODO -->
+      </event>
+  }
+
+  implicit class GFamilyEvent(val ev : FamilyEvent) extends XMLable {
+    def toXML =
+      <event type={ev.`type`.title}>
+          <date>{ev.date}</date>
+          { if (ev.place) <place>{ev.place.placeName}</place> }
       </event>
   }
 
@@ -118,7 +161,20 @@ object GedcomConverters {
     def title = t.display.toLowerCase
   }
 
-  implicit class GenIndividualEvents(val evs : JList[IndividualEvent]) extends XMLable {
+  // this can't be merged with GIndividualEventType due to the types hierarchy
+  implicit class GFamilyEventType(val t : FamilyEventType) {
+    def title = t.display.toLowerCase
+  }
+
+  implicit class GIndividualEvents(val evs : JList[IndividualEvent]) extends XMLable {
+    def toXML =
+      <events>
+        { evs.asScala.toList.map(_.toXML) }
+      </events>
+  }
+
+  // this can't be merged with GIndividualEvents due to the types hierarchy
+  implicit class GenFamilyEvents(val evs : JList[FamilyEvent]) extends XMLable {
     def toXML =
       <events>
         { evs.asScala.toList.map(_.toXML) }
