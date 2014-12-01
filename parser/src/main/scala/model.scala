@@ -39,15 +39,28 @@ object GedcomConverters {
   implicit class GDocument(val g : Gedcom) extends XMLable {
     def toXML =
       <document>
-        <infos>TODO</infos>
+        { g.header.toXML }
         { g.individuals.toXML }
         { g.families.toXML }
       </document>
   }
 
+  implicit class GHeader(val h : Header) extends XMLable {
+    def toXML =
+      <info>
+        { h.copyrightData.asScala.toList.mkString("\n").toXML("copyright") }
+        { h.date.toXML("date") }
+        { h.language.toXML("language") }
+        { h.gedcomVersion.versionNumber.toString.toXML("gedcomVersion") }
+      </info>
+  }
+
   /** Individuals **/
 
   implicit class GIndividual(val individual : Individual) extends XMLable {
+
+    val CUSTOM_TAGS = List("title")
+
     def toXML =
       <individual id={individual.xref.toStringId}>
         { individual.names.toXML }
@@ -59,6 +72,10 @@ object GedcomConverters {
         { individual.phoneNumbers.toXML("phone") }
         { if (individual.address) individual.address.toXML }
         { individual.notes.toXML }
+        {
+          val sts = individual.customTags.asScala.toList
+          sts.filter(s => CUSTOM_TAGS.contains(s.tag)).map(_.toXML)
+        }
       </individual>
   }
 
@@ -182,6 +199,11 @@ object GedcomConverters {
       <xml>
         { ss.asScala.toList.map(_.toXML(tag)) }
       </xml>.copy(label=tag+"s")
+  }
+
+  implicit class GStringTree(val st : StringTree) extends XMLable {
+    def toXML =
+      <xml>{st.value}</xml>.copy(label=st.tag)
   }
 
 }
