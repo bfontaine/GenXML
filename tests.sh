@@ -1,4 +1,5 @@
 #! /bin/bash
+set -e
 
 EXE=./gedcom2xml
 TESTS=_tests
@@ -10,9 +11,15 @@ __test_ged2xml() {
   local filename=${ged##*/}
   local base=$TESTS/${filename%%.*}
   local xml=${base}.xml
+  local ok=" [OK]"
 
-  echo "$filename -> $xml"
-  $EXE $ged $xml
+  echo "* $filename"
+  echo -n "  - XML"
+  $EXE $ged $xml && echo "$ok"
+  echo -n "  - DTD validation"
+  xmllint --noout --dtdvalid gedcom.dtd $xml && echo "$ok"
+  #echo "  - XSD validation"
+  #echo "  - XSLT -> HTML"
 }
 
 for ged in sources/*.ged; do

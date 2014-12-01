@@ -33,6 +33,11 @@ object GedcomConverters {
 
   implicit def any2bool(x : Any) = (x != null)
 
+  implicit class GString(val s : String) extends XMLCustomTag {
+    def toXML =
+      <xml>{s}</xml>
+  }
+
   /** Document **/
 
   implicit class GDocument(val g : Gedcom) extends XMLable {
@@ -46,12 +51,12 @@ object GedcomConverters {
 
   implicit class GHeader(val h : Header) extends XMLable {
     def toXML =
-      <info>
+      <infos>
         { h.copyrightData.asScala.toList.mkString("\n").toXML("copyright") }
         { h.date.toXML("date") }
         { h.language.toXML("language") }
         { h.gedcomVersion.versionNumber.toString.toXML("gedcomVersion") }
-      </info>
+      </infos>
   }
 
   /** Individuals **/
@@ -63,7 +68,7 @@ object GedcomConverters {
     def toXML =
       <individual id={individual.xref.toStringId}>
         { individual.names.toXML }
-        <sex>{ individual.sex }</sex> { /* normalize it? */ }
+        { if (individual.sex) <sex>{ individual.sex }</sex> }
         { individual.events.toXML }
         { if (individual.emails) individual.emails.toXML("email") }
         { if (individual.faxNumbers) individual.faxNumbers.toXML("faxNumber") }
@@ -125,15 +130,15 @@ object GedcomConverters {
       </familiesWhereSpouse>
   }
 
-  def familyXrefXML(fam : Family) =
-      <family xref={fam.xref.toStringId} />
+  def xrefXML(fam : Family, tag : String) =
+      <xml xref={fam.xref.toStringId} />.copy(label=tag)
 
   implicit class GenFamilyWhereChild(val fam : FamilyChild) extends XMLable {
-    def toXML = familyXrefXML(fam.family)
+    def toXML = xrefXML(fam.family, "familyWhereChild")
   }
 
   implicit class GenFamilyWhereSpouse(val fam : FamilySpouse) extends XMLable {
-    def toXML = familyXrefXML(fam.family)
+    def toXML = xrefXML(fam.family, "familyWhereSpouse")
   }
 
   /** Events **/
@@ -183,14 +188,13 @@ object GedcomConverters {
 
   implicit class GNote(val note : Note) extends XMLable {
     def toXML =
-      // FIXME isn't called?
-      <note>{ note.lines.asScala.mkString("\n") }</note>
+      <note>{ note.lines.asScala.toList.mkString("\n") }</note>
   }
 
   implicit class GNotes(val notes : JList[Note]) extends XMLable {
     def toXML =
       <notes>
-        { notes.asScala.map(_.toString) }
+        { notes.asScala.toList.map(_.toXML) }
       </notes>
   }
 
@@ -228,11 +232,6 @@ object GedcomConverters {
   implicit class GCustomString(val s : StringWithCustomTags) extends XMLCustomTag {
     def toXML =
       new GString((if (s) s; else "").toString).toXML
-  }
-
-  implicit class GString(val s : String) extends XMLCustomTag {
-    def toXML =
-      <xml>{s}</xml>
   }
 
   implicit class GCustomStrings(val ss : JList[StringWithCustomTags]) extends

@@ -1,15 +1,14 @@
 <!ELEMENT document (infos,individuals,families)>
   <!ELEMENT infos (copyright?,date?,language?,gedcomVersion?)>
     <!ELEMENT copyright (#PCDATA)>
-    <!ELEMENT date (#PCDATA)>
     <!ELEMENT language (#PCDATA)>
     <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!ELEMENT individual (personalName,sex,events,emails?,faxNumbers?,urls?,phones?,address?,notes,familiesWhereChild,familiesWhereSpouse,title?)>
+  <!ELEMENT individual (personalName,sex?,events,emails?,faxNumbers?,urls?,phones?,address?,notes,familiesWhereChild,familiesWhereSpouse,title?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!ELEMENT personalName (#PCDATA)>
-    <!ELEMENT sex (M|F) #IMPLIED>
+    <!ELEMENT sex (#PCDATA)>
     <!ELEMENT emails (email*)>
       <!ELEMENT email (#PCDATA)>
     <!ELEMENT faxNumbers (faxNumber*)>
@@ -50,7 +49,7 @@
                           event|marriage|marriage_banner|marriage_contract|
                           marriage_license|marriage_settlement|
                           adoption|arrival|baptism|bar_mitzvah|bas_mitzvah|
-                          birth|blessing|burial|census|christening|
+                          birth|blessing|burial|christening|
                           christening_adult|confirmation|cremation|death|
                           emigration|first_communion|graduation|immigration|
                           naturalization|ordination|probate|retirement|will) #REQUIRED>
