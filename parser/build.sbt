@@ -1,3 +1,7 @@
+import com.github.retronym.SbtOneJar._
+
+oneJarSettings
+
 name := "gedcom2xml"
 
 version := "1.0"
