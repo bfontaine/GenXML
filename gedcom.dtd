@@ -1,52 +1,54 @@
 <!ELEMENT document (infos,individuals,families)>
-  <!ELEMENT infos (source?,date?,file?)>
-    <!ELEMENT source (#PCDATA)>
-    <!ELEMENT file (#PCDATA)>
+  <!ELEMENT infos (copyright?,date?,language?,gedcomVersion?)>
+    <!ELEMENT copyright (#PCDATA)>
+    <!ELEMENT date (#PCDATA)>
+    <!ELEMENT language (#PCDATA)>
+    <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!-- INDI -->
-  <!ELEMENT individual (name?,title?,birth?,baptism?,death?,burial?,parent-of?,children-of?)>
+  <!ELEMENT individual (personalName,sex,events,emails?,faxNumbers?,urls?,phones?,address?,notes,familiesWhereChild,familiesWhereSpouse,title?)>
     <!ATTLIST individual id ID #REQUIRED>
-    <!-- SEX -->
-    <!ATTLIST individual sex (male|female|undetermined) #IMPLIED>
-    <!-- NAME -->
-    <!ELEMENT name (CDATA)>
-    <!-- TITL -->
-    <!ELEMENT title (CDATA)>
-    <!-- BIRT -->
-    <!ELEMENT birth (place?,date?)>
-    <!-- CHR -->
-    <!ELEMENT baptism (place?,date?)>
-    <!-- DEAT -->
-    <!ELEMENT death (place?,date?)>
-    <!-- BURI -->
-    <!ELEMENT burial (place?,date?)>
-    <!ELEMENT parent-ofs (parent-of+)>
-      <!-- FAMS: -->
-      <!ELEMENT parent-of EMPTY>
-        <!ATTLIST parent-of ref IDREF #REQUIRED>
-    <!-- FAMC: -->
-    <!ELEMENT children-of EMPTY>
-      <!ATTLIST children-of ref IDREF #REQUIRED>
+    <!ELEMENT personalName (#PCDATA)>
+    <!ELEMENT sex (M|F) #IMPLIED>
+    <!ELEMENT events (event*)>
+      <!ELEMENT event (date,cause?,place?)>
+    <!ELEMENT emails (email*)>
+      <!ELEMENT email (#PCDATA)>
+    <!ELEMENT faxNumbers (faxNumber*)>
+      <!ELEMENT faxNumber (#PCDATA)>
+    <!ELEMENT urls (url*)>
+      <!ELEMENT url (#PCDATA)>
+    <!ELEMENT phones (phone*)>
+      <!ELEMENT phone (#PCDATA)>
+    <!ELEMENT address (addr1,addr2,postalCode,city,stateOrProvince,country)>
+      <!ELEMENT addr1 (#PCDATA)>
+      <!ELEMENT addr2 (#PCDATA)>
+      <!ELEMENT postalCode (#PCDATA)>
+      <!ELEMENT city (#PCDATA)>
+      <!ELEMENT stateOrProvince (#PCDATA)>
+      <!ELEMENT country (#PCDATA)>
+    <!ELEMENT notes (note*)>
+    <!ELEMENT familiesWhereChild (familyWhereChild?)>
+      <!ELEMENT familyWhereChild EMPTY>
+        <!ATTLIST familyWhereChild xref IDREF #REQUIRED>
+    <!ELEMENT familiesWhereSpouse (familyWhereSpouse*)>
+      <!ELEMENT familyWhereSpouse EMPTY>
+        <!ATTLIST familyWhereSpouse xref IDREF #REQUIRED>
 
 <!ELEMENT families (family*)>
-  <!-- FAM -->
-  <!ELEMENT family (marriage?,divorce?,husband?,wife?,children?)>
+  <!ELEMENT family (husband?,wife?,child*,events)>
     <!ATTLIST family id ID #REQUIRED>
-    <!-- MARR -->
-    <!ELEMENT marriage (date?,place?)>
-    <!-- DIV -->
-    <!ELEMENT divorce (date?,place?)>
-    <!-- HUSB -->
     <!ELEMENT husband EMPTY>
-      <!ATTLIST husband ref IDREF #REQUIRED>
-    <!-- WIFE -->
+      <!ATTLIST husband xref IDREF #REQUIRED>
     <!ELEMENT wife EMPTY>
-      <!ATTLIST wife ref IDREF #REQUIRED>
-    <!ELEMENT children (child*)>
-      <!-- CHIL -->
-      <!ELEMENT child EMPTY>
-        <!ATTLIST child ref IDREF #REQUIRED>
+      <!ATTLIST wife xref IDREF #REQUIRED>
+    <!ELEMENT child EMPTY>
+      <!ATTLIST child xref IDREF #REQUIRED>
+    <!ELEMENT events (event*)>
+      <!ELEMENT event (date,cause?,place?)>
 
+<!ELEMENT cause (#PCDATA)>
 <!ELEMENT date (#PCDATA)>
+<!ELEMENT note (#PCDATA)>
 <!ELEMENT place (#PCDATA)>
+<!ELEMENT title (#PCDATA)>

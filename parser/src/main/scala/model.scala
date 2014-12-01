@@ -63,7 +63,7 @@ object GedcomConverters {
     def toXML =
       <individual id={individual.xref.toStringId}>
         { individual.names.toXML }
-        <sex>{ individual.sex }</sex>
+        <sex>{ individual.sex }</sex> { /* normalize it? */ }
         { individual.events.toXML }
         { if (individual.emails) individual.emails.toXML("email") }
         { if (individual.faxNumbers) individual.faxNumbers.toXML("faxNumber") }
@@ -98,7 +98,7 @@ object GedcomConverters {
             <wife xref={ family.wife.xref.toStringId } /> }
         {
           family.children.asScala.toList.map(ch =>
-              <children xref={ch.xref.toStringId} />)
+              <child xref={ch.xref.toStringId} />)
         }
         { family.events.toXML }
       </family>
@@ -112,7 +112,7 @@ object GedcomConverters {
   }
 
   implicit class GenFamiliesWhereChild(val fams : JList[FamilyChild]) extends XMLable {
-    def toXML =
+    def toXML = // TODO: use only one element, given that the list contains 0..1 elements?
       <familiesWhereChild>
         { fams.asScala.toList.map(_.toXML) }
       </familiesWhereChild>
@@ -125,17 +125,15 @@ object GedcomConverters {
       </familiesWhereSpouse>
   }
 
-  class FamilyXref(val fam : Family) extends XMLable {
-    def toXML =
+  def familyXrefXML(fam : Family) =
       <family xref={fam.xref.toStringId} />
-  }
 
   implicit class GenFamilyWhereChild(val fam : FamilyChild) extends XMLable {
-    def toXML = new FamilyXref(fam.family).toXML
+    def toXML = familyXrefXML(fam.family)
   }
 
   implicit class GenFamilyWhereSpouse(val fam : FamilySpouse) extends XMLable {
-    def toXML = new FamilyXref(fam.family).toXML
+    def toXML = familyXrefXML(fam.family)
   }
 
   /** Events **/
@@ -227,8 +225,7 @@ object GedcomConverters {
 
   /** Others **/
 
-  implicit class GCustomString(val s : StringWithCustomTags) extends
-  XMLCustomTag {
+  implicit class GCustomString(val s : StringWithCustomTags) extends XMLCustomTag {
     def toXML =
       new GString((if (s) s; else "").toString).toXML
   }
