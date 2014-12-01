@@ -8,3 +8,4 @@
 *.scalac
 target/
 ged551-5.pdf
+/gedcom2xml
