@@ -1,11 +1,11 @@
-<!-- FIXME not up-to-date with the DTD -->
 <?xml version="1.0"?>
+<!-- FIXME not up-to-date with the DTD -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <xsd:element name="document">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="infos"/>
+        <xsd:element ref="infos" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="individuals"/>
         <xsd:element ref="families"/>
       </xsd:sequence>
@@ -15,22 +15,25 @@
   <xsd:element name="infos">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="source" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="copyright" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="date" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="file" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="language" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="gedcomVersion" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="source">
-    <xsd:complexType mixed="true">
-    </xsd:complexType>
+  <xsd:element name="copyright">
+    <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="file">
-    <xsd:complexType mixed="true">
-    </xsd:complexType>
+  <!-- TODO date -->
+
+  <xsd:element name="language">
+    <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
+
+  <!-- TODO gedcomVersion -->
 
   <xsd:element name="individuals">
     <xsd:complexType>
@@ -43,26 +46,23 @@
   <xsd:element name="individual">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="name" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="personalName"/>
+        <xsd:element ref="sex" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="events"/>
+        <xsd:element ref="emails" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="faxNumbers" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="phones" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="address" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="familiesWhereChild"/>
+        <xsd:element ref="familiesWhereSpouse"/>
         <xsd:element ref="title" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="birth" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="baptism" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="death" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="burial" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="parent-of" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="children-of" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
-      <xsd:attribute name="sex" use="optional">
-        <xsd:simpleType>
-          <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="male"/>
-            <xsd:enumeration value="female"/>
-            <xsd:enumeration value="undetermined"/>
-          </xsd:restriction>
-        </xsd:simpleType>
-      </xsd:attribute>
     </xsd:complexType>
   </xsd:element>
+
+  <!-- TODO update below -->
 
   <xsd:element name="name" type="xsd:string"/>
 

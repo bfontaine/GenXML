@@ -5,7 +5,7 @@
     <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!ELEMENT individual (personalName,sex?,events,emails?,faxNumbers?,urls?,phones?,address?,notes,familiesWhereChild,familiesWhereSpouse,title?)>
+  <!ELEMENT individual (personalName,sex?,events,emails?,faxNumbers?,urls?,phones?,address?,notes?,familiesWhereChild,familiesWhereSpouse,title?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!ELEMENT personalName (#PCDATA)>
     <!ELEMENT sex (#PCDATA)>
