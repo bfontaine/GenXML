@@ -14,9 +14,14 @@ import GedcomConverters._
 
 object GenParser {
 
+  /**
+   * Read a file and return a {BufferedInputStream} representing the file
+   * content without leading/trailing spaces nor empty lines
+   * @param filename path
+   **/
   def readFile(filename : String) = {
     val source = Source.fromFile(filename, "latin1")
-    // remove {lead,trail}ing spaces as well as empty newlines
+    // remove {lead,trail}ing spaces as well as empty lines
     val content = "\\s*\n\\s+".r.replaceAllIn(source.mkString, "\n")
 
     new BufferedInputStream(new ByteArrayInputStream(content.getBytes()))
@@ -25,6 +30,7 @@ object GenParser {
   /**
    * Parse a file and return a GEDCOM document
    * @param filename
+   * @param verbose if true, parsing warnings & errors will be printed
    **/
   def parseFile(filename : String, verbose : Boolean) = {
     val gp = new GedcomParser()
@@ -36,11 +42,15 @@ object GenParser {
     gp.gedcom
   }
 
+  /**
+   * Parse a file and return a GEDCOM document
+   * @param filename path
+   **/
   def parseFile(filename : String) : Gedcom = parseFile(filename, false)
 
   /**
    * Read a GEDCOM file and return an XML string
-   * @param filename
+   * @param filename path
    **/
   def convertFile(filename : String) = {
     val content = parseFile(filename)
@@ -48,6 +58,12 @@ object GenParser {
     printer.format(content.toXML)
   }
 
+  /**
+   * Read a GEDCOM file and write its XML representation in another file,
+   * creating it if it doesn’t exist
+   * @param inputFilename GEDCOM input file path
+   * @param outputFilename XML output file path
+   **/
   def convertFile(inputFilename : String, outputFilename : String) {
     val xml = convertFile(inputFilename)
     val writer = new BufferedWriter(new FileWriter(outputFilename))
