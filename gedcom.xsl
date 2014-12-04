@@ -2,28 +2,60 @@
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
     <xsl:output method="html" encoding="utf-8" indent="yes"/>
+
+    <!-- match racine-->
     <xsl:template match="/">
         <html>
             <head>
-                <title>Test XHTML gedcom</title>
+                <title>Gedcom XHTML</title>
             </head>
             <body>
-                <table border="1" cellpadding="2" cellspacing="0">
-                    <caption>Individual</caption>
-                    <tr>
-                        <th>Identifiant</th>
-                        <th>INDI_ID</th>
-                        <th>Nom</th>
-                        <th>Sex</th>
-                        <th>emails</th>
-                    </tr>
-                    <xsl:apply-templates select="document/individuals/individual">
-                        <xsl:sort select="@id" order="ascending"/>
-                    </xsl:apply-templates>
-                </table>
+                <xsl:apply-templates select="document"/>
             </body>
         </html>
     </xsl:template>
+
+    <!-- Document-->
+    <xsl:template match="document">
+        <!-- TODO <xsl:apply-templates select="infos"/> -->
+        <xsl:apply-templates select="individuals"/>
+        <xsl:apply-templates select="families"/>
+    </xsl:template>
+    
+    <!-- Individuals -->
+    <xsl:template match="individuals">
+        <table border="1" cellpadding="2" cellspacing="0">
+            <caption>Individual</caption>
+            <tr>
+                <th>Identifiant</th>
+                <th>INDI_ID</th>
+                <th>Nom</th>
+                <th>Sex</th>
+                <th>emails</th>
+            </tr>
+            <xsl:apply-templates select="individual">
+                <xsl:sort select="@id" order="ascending"/>
+            </xsl:apply-templates>
+        </table>
+    </xsl:template>
+
+    <!-- Families -->
+    <xsl:template match="families">
+        <table border="1" cellpadding="2" cellspacing="0">
+            <caption>Families</caption>
+            <tr>
+                <th>Identifiant</th>
+                <th>Husband</th>
+                <th>Wife</th>
+                <th>Child</th>
+            </tr>
+            <xsl:apply-templates select="family">
+                <xsl:sort select="@id" order="ascending"/>
+            </xsl:apply-templates>
+        </table>
+    </xsl:template>
+    
+    <!-- Individual -->
     <xsl:template match="individual">
         <tr>
             <!-- individual counter-->
@@ -56,6 +88,21 @@
             </xsl:choose>
         </tr>
     </xsl:template>
+
+    <!-- Individual -->
+    <xsl:template match="family">
+        <tr>
+            <td><xsl:value-of select="@id"/></td>
+            <td><xsl:value-of select="husband/@xref"/></td>
+            <td><xsl:value-of select="wife/@xref"/></td>
+            <td>
+            <xsl:for-each select="child">
+                <xsl:value-of select="@xref"/>
+            </xsl:for-each>
+            </td>
+        </tr>
+    </xsl:template>
+
     <xsl:template match="personalName | sex | emails">
         <td><xsl:value-of select="."/></td>
     </xsl:template>
