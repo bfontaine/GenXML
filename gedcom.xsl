@@ -14,16 +14,18 @@
                         <th>Nom</th>
                         <th>Sex</th>
                     </tr>
-                    <xsl:for-each select="document/individuals/individual">
+                    <xsl:apply-templates select="document/individuals/individual">
                         <xsl:sort select="personalName" order="ascending"/>
-                        <tr>
-                            <td><xsl:number value="position()" format="1"/></td>
-                            <td><xsl:value-of select="personalName"/></td>
-                            <td><xsl:value-of select="sex"/></td>
-                        </tr>
-                    </xsl:for-each>
+                    </xsl:apply-templates>
                 </table>
             </body>
         </html>
+    </xsl:template>
+    <xsl:template match="individual">
+        <tr>
+            <td><xsl:number value="position()" format="1"/></td>
+            <td><xsl:value-of select="personalName"/></td>
+            <td><xsl:value-of select="sex"/></td>
+        </tr>
     </xsl:template>
 </xsl:stylesheet>
