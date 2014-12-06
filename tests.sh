@@ -18,7 +18,8 @@ __test_ged2xml() {
   $EXE $ged $xml && echo "$ok"
   echo -n "  - DTD validation"
   xmllint --noout --dtdvalid gedcom.dtd $xml && echo "$ok"
-  #echo "  - XSD validation"
+  echo "  - XSD validation"
+  xmllint --noout --schema gedcom.xsd $xml && echo "$ok"
   #echo "  - XSLT -> HTML"
 }
 
