@@ -109,7 +109,6 @@ object GedcomConverters {
         { if (individual.sex) <sex>{ individual.sex }</sex> }
         { individual.events.toXML }
         { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
-        { if (individual.address) individual.address.toXML }
         { individual.notes.toXML }
         { individual.familiesWhereChild.toXML }
         { individual.familiesWhereSpouse.toXML }
@@ -252,19 +251,6 @@ object GedcomConverters {
   }
 
   /** Individual fields **/
-
-  /** An XMLable {Address} **/
-  implicit class GAddress(val addr : Address) extends XMLable {
-    def toXML =
-      <address>
-        <addr1>{ addr.addr1 }</addr1>
-        <addr2>{ addr.addr2 }</addr2>
-        <postalCode>{ addr.postalCode }</postalCode>
-        <city>{ addr.city }</city>
-        <stateOrProvince>{ addr.stateProvince }</stateOrProvince>
-        <country>{ addr.country }</country>
-      </address>
-  }
 
   /** An XMLable {PersonalName} list **/
   implicit class GPersoNames(val names : JList[PersonalName]) extends XMLable {

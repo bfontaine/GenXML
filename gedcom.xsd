@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- FIXME not up-to-date with the DTD -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
   <xsd:element name="document">
@@ -27,13 +26,17 @@
     <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
-  <!-- TODO date -->
+  <xsd:element name="date">
+    <xsd:complexType mixed="true"></xsd:complexType>
+  </xsd:element>
 
   <xsd:element name="language">
     <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
-  <!-- TODO gedcomVersion -->
+  <xsd:element name="gedcomVersion">
+    <xsd:complexType mixed="true"></xsd:complexType>
+  </xsd:element>
 
   <xsd:element name="individuals">
     <xsd:complexType>
@@ -50,7 +53,6 @@
         <xsd:element ref="sex" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="events"/>
         <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="address" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="familiesWhereChild"/>
         <xsd:element ref="familiesWhereSpouse"/>
@@ -59,11 +61,28 @@
     </xsd:complexType>
   </xsd:element>
 
-  <!-- TODO update below -->
+  <!-- FIXME code below is not up-to-date with the DTD -->
 
-  <xsd:element name="name" type="xsd:string"/>
+  <xsd:element name="personalName" type="xsd:string"/>
 
-  <xsd:element name="title" type="xsd:string"/>
+  <!-- TODO  enum{F, M, U} or empty -->
+  <xsd:element name="sex" type="xsd:string"/>
+
+  <xsd:element name="events">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="event" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="urls">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="url" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
 
   <xsd:complexType name="event">
     <xsd:sequence>
@@ -72,10 +91,7 @@
     </xsd:sequence>
   </xsd:complexType>
 
-  <xsd:element name="birth" type="event"/>
-  <xsd:element name="baptism" type="event"/>
-  <xsd:element name="death" type="event"/>
-  <xsd:element name="burial" type="event"/>
+  <xsd:element name="title" type="xsd:string"/>
 
   <xsd:element name="parent-ofs">
     <xsd:complexType>
