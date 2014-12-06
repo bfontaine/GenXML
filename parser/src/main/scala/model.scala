@@ -108,10 +108,7 @@ object GedcomConverters {
         { individual.names.toXML }
         { if (individual.sex) <sex>{ individual.sex }</sex> }
         { individual.events.toXML }
-        { if (individual.emails) individual.emails.toXML("email") }
-        { if (individual.faxNumbers) individual.faxNumbers.toXML("faxNumber") }
         { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
-        { if (individual.phoneNumbers) individual.phoneNumbers.toXML("phone") }
         { if (individual.address) individual.address.toXML }
         { individual.notes.toXML }
         { individual.familiesWhereChild.toXML }

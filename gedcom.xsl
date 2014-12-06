@@ -21,7 +21,7 @@
         <xsl:apply-templates select="individuals"/>
         <xsl:apply-templates select="families"/>
     </xsl:template>
-    
+
     <!-- Individuals -->
     <xsl:template match="individuals">
         <table border="1" cellpadding="2" cellspacing="0">
@@ -31,7 +31,6 @@
                 <th>INDI_ID</th>
                 <th>Nom</th>
                 <th>Sex</th>
-                <th>emails</th>
             </tr>
             <xsl:apply-templates select="individual">
                 <xsl:sort select="@id" order="ascending"/>
@@ -54,7 +53,7 @@
             </xsl:apply-templates>
         </table>
     </xsl:template>
-    
+
     <!-- Individual -->
     <xsl:template match="individual">
         <tr>
@@ -66,7 +65,7 @@
 
             <!-- individual attribute -->
             <xsl:apply-templates select="personalName"/>
-            
+
             <!-- test if sex exist -->
             <xsl:choose>
                 <xsl:when test="sex">
@@ -74,16 +73,6 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <td> - </td>
-                </xsl:otherwise>
-            </xsl:choose>
-            
-            <!-- test if emails vide(" ") -->
-            <xsl:choose>
-                <xsl:when test="emails = ' '">
-                    <td> - </td>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="sex"/>
                 </xsl:otherwise>
             </xsl:choose>
         </tr>

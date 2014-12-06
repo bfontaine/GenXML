@@ -5,18 +5,12 @@
     <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!ELEMENT individual (personalName,sex?,events,emails?,faxNumbers?,urls?,phones?,address?,notes?,familiesWhereChild,familiesWhereSpouse,title?)>
+  <!ELEMENT individual (personalName,sex?,events,urls?,address?,notes?,familiesWhereChild,familiesWhereSpouse,title?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!ELEMENT personalName (#PCDATA)>
     <!ELEMENT sex (#PCDATA)>
-    <!ELEMENT emails (email*)>
-      <!ELEMENT email (#PCDATA)>
-    <!ELEMENT faxNumbers (faxNumber*)>
-      <!ELEMENT faxNumber (#PCDATA)>
     <!ELEMENT urls (url*)>
       <!ELEMENT url (#PCDATA)>
-    <!ELEMENT phones (phone*)>
-      <!ELEMENT phone (#PCDATA)>
     <!ELEMENT address (addr1,addr2,postalCode,city,stateOrProvince,country)>
       <!ELEMENT addr1 (#PCDATA)>
       <!ELEMENT addr2 (#PCDATA)>

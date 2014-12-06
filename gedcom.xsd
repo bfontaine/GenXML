@@ -49,10 +49,7 @@
         <xsd:element ref="personalName"/>
         <xsd:element ref="sex" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="events"/>
-        <xsd:element ref="emails" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="faxNumbers" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="phones" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="address" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="familiesWhereChild"/>
