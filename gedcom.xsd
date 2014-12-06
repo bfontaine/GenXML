@@ -38,6 +38,9 @@
     <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="cause" type="xsd:string"/>
+  <xsd:element name="place" type="xsd:string"/>
+
   <xsd:element name="individuals">
     <xsd:complexType>
       <xsd:sequence>
@@ -58,10 +61,9 @@
         <xsd:element ref="familiesWhereSpouse"/>
         <xsd:element ref="title" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:ID" use="required"/>
     </xsd:complexType>
   </xsd:element>
-
-  <!-- FIXME code below is not up-to-date with the DTD -->
 
   <xsd:element name="personalName" type="xsd:string"/>
 
@@ -84,34 +86,59 @@
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:complexType name="event">
-    <xsd:sequence>
-      <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
-      <xsd:element ref="date" minOccurs="0" maxOccurs="1"/>
-    </xsd:sequence>
-  </xsd:complexType>
+  <xsd:element name="url" type="xsd:string"/>
 
-  <xsd:element name="title" type="xsd:string"/>
-
-  <xsd:element name="parent-ofs">
+  <xsd:element name="notes">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="parent-of" maxOccurs="unbounded"/>
+        <xsd:element ref="note" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="parent-of">
+  <xsd:element name="note" type="xsd:string"/>
+
+  <xsd:element name="event">
     <xsd:complexType>
-      <xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
+      <xsd:sequence>
+        <!-- TODO enum + diff between individual & family events -->
+        <xsd:element ref="date"/>
+        <xsd:element ref="cause" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+      <xsd:attribute name="type" type="xsd:string" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="children-of">
+  <xsd:element name="familiesWhereChild">
     <xsd:complexType>
-      <xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
+      <xsd:sequence>
+        <xsd:element ref="familyWhereChild" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
+
+  <xsd:element name="familiesWhereSpouse">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="familyWhereSpouse" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="familyWhereChild">
+    <xsd:complexType>
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="familyWhereSpouse">
+    <xsd:complexType>
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="title" type="xsd:string"/>
 
   <xsd:element name="families">
     <xsd:complexType>
@@ -124,67 +151,30 @@
   <xsd:element name="family">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="marriage" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="divorce" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="husband" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="wife" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="children" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="child" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element ref="events"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="marriage">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="date" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="divorce">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="date" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-
   <xsd:element name="husband">
     <xsd:complexType>
-      <xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="wife">
     <xsd:complexType>
-      <xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="children">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="child" minOccurs="0" maxOccurs="unbounded"/>
-      </xsd:sequence>
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="child">
     <xsd:complexType>
-      <xsd:attribute name="ref" type="xsd:IDREF" use="required"/>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="date">
-    <xsd:complexType mixed="true">
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="place">
-    <xsd:complexType mixed="true">
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
     </xsd:complexType>
   </xsd:element>
 </xsd:schema>
