@@ -4,7 +4,13 @@ VERSION=1.0
 
 JAR=$(PROJECT).jar
 EXE=$(PROJECT)
+
 TESTS=tests.sh
+
+TMP=/tmp
+SUBMISSION_NAME=fontaine-galichet-gedcom2xml
+SUBMISSION=$(TMP)/$(SUBMISSION_NAME)
+TARBALL=$(TMP)/$(SUBMISSION_NAME).tgz
 
 SRC=parser
 SRCS=$(wildcard $(SRC)/src/main/scala/*.scala)
@@ -12,10 +18,13 @@ SRCS=$(wildcard $(SRC)/src/main/scala/*.scala)
 SCALA_VERSION=2.10
 SRC_JAR=$(SRC)/target/scala-$(SCALA_VERSION)/$(PROJECT)_$(SCALA_VERSION)-$(VERSION)-one-jar.jar
 
-JAR_DIR=$(shell pwd)
+SHELL := /bin/bash
+
+JAR_DIR?=$(shell pwd)
 
 CP=cp
 RM=rm -f
+RM_R=rm -rf
 SH=$(shell which sh)
 
 .PHONY: all clean mrproper tests
@@ -38,8 +47,22 @@ $(EXE):
 tests: $(EXE) $(TESTS)
 	@./$(TESTS)
 
+tarball: $(SRC_JAR) tests
+	make -B JAR_DIR=. $(EXE) && \
+	$(RM) $(TARBALL) && \
+	$(RM_R) $(SUBMISSION) && \
+	$(CP) -r . $(SUBMISSION) && \
+	pushd $(SUBMISSION) && \
+	$(RM_R) .git .DS_Store .*.swp .*.swo *~ README.md && \
+	$(RM_R) $(SRC)/target $(SRC)/project/project $(SRC)/project/target && \
+	pandoc docs/rapport.md -o rapport.pdf && \
+	$(RM_R) docs && \
+	popd && \
+	tar czvf $(TARBALL) $(SUBMISSION)
+
 clean:
 	$(RM) $(EXE) $(JAR)
+	$(RM_R) $(SUBMISSION)
 
 mrproper: clean
-	$(RM) $(SRC_JAR)
+	$(RM) $(SRC_JAR) $(TARBALL)

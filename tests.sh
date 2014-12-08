@@ -2,7 +2,7 @@
 set -e
 
 EXE=./gedcom2xml
-TESTS=_tests
+TESTS=xml
 
 mkdir -p $TESTS
 
