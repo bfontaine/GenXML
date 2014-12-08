@@ -59,12 +59,22 @@
         <xsd:element ref="title" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
-      <!-- TODO  enum{F, M, U, N} or empty -->
+      <!-- TODO  enum{F, M, U, N} -->
       <xsd:attribute name="sex" type="xsd:string" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="personalName" type="xsd:string"/>
+  <xsd:element name="personalName">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="firstname" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="lastname" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="firstname" type="xsd:string"/>
+  <xsd:element name="lastname" type="xsd:string"/>
 
   <xsd:element name="events">
     <xsd:complexType>

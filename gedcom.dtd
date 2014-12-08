@@ -8,7 +8,9 @@
   <!ELEMENT individual (personalName,events,urls?,notes,familiesWhereChild,familiesWhereSpouse,medias?,title?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!ATTLIST individual sex (F|M|U|N) #IMPLIED>
-    <!ELEMENT personalName (#PCDATA)>
+    <!ELEMENT personalName (firstname?,lastname?)>
+      <!ELEMENT firstname (#PCDATA)>
+      <!ELEMENT lastname (#PCDATA)>
     <!ELEMENT urls (url*)>
       <!ELEMENT url (#PCDATA)>
     <!ELEMENT familiesWhereChild (familyWhereChild?)>

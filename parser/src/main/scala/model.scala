@@ -322,8 +322,16 @@ object GedcomConverters {
 
   /** An XMLable {PersonalName} **/
   implicit class GPersoName(val name : PersonalName) extends XMLable {
-    def toXML =
-      { name.basic /* TODO parse by hand */ .toXML("personalName") }
+    val NAME_REGEX = "(.*?)\\s+/(.*)/".r
+
+    def toXML = NAME_REGEX.findFirstMatchIn(name.basic) match {
+      case None => <personalName/>
+      case Some(m) =>
+        <personalName>
+          <firstname>{m.group(1)}</firstname>
+          <lastname>{m.group(2)}</lastname>
+        </personalName>
+    }
   }
 
   /** Others **/
