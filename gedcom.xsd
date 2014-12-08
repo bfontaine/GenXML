@@ -53,28 +53,39 @@
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="personalName"/>
-        <xsd:element ref="sex" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="events"/>
         <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="familiesWhereChild"/>
         <xsd:element ref="familiesWhereSpouse"/>
+        <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="title" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
+      <!-- TODO  enum{F, M, U, N} or empty -->
+      <xsd:attribute name="sex" type="xsd:string" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="personalName" type="xsd:string"/>
-
-  <!-- TODO  enum{F, M, U} or empty -->
-  <xsd:element name="sex" type="xsd:string"/>
 
   <xsd:element name="events">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="event" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="event">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="date"/>
+        <xsd:element ref="cause" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+        <!-- TODO enum + diff between individual & family events -->
+      <xsd:attribute name="type" type="xsd:string" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -88,6 +99,42 @@
 
   <xsd:element name="url" type="xsd:string"/>
 
+  <xsd:element name="medias">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="media" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="media">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="title"/>
+        <xsd:element ref="files" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+      <xsd:attribute name="id" type="xsd:IDREF"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="files">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="file" minOccurs="0" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="file">
+    <xsd:complexType>
+      <xsd:attribute name="format" type="xsd:string"/>
+      <xsd:attribute name="type" type="xsd:string"/>
+      <xsd:attribute name="href" type="xsd:string"/>
+      <xsd:attribute name="title" type="xsd:string"/>
+    </xsd:complexType>
+  </xsd:element>
+
   <xsd:element name="notes">
     <xsd:complexType>
       <xsd:sequence>
@@ -98,18 +145,6 @@
 
   <xsd:element name="note" type="xsd:string"/>
 
-  <xsd:element name="event">
-    <xsd:complexType>
-      <xsd:sequence>
-        <!-- TODO enum + diff between individual & family events -->
-        <xsd:element ref="date"/>
-        <xsd:element ref="cause" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
-      </xsd:sequence>
-      <xsd:attribute name="type" type="xsd:string" use="required"/>
-    </xsd:complexType>
-  </xsd:element>
-
   <xsd:element name="familiesWhereChild">
     <xsd:complexType>
       <xsd:sequence>
@@ -118,17 +153,17 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:element name="familyWhereChild">
+    <xsd:complexType>
+      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+
   <xsd:element name="familiesWhereSpouse">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="familyWhereSpouse" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="familyWhereChild">
-    <xsd:complexType>
-      <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -155,6 +190,7 @@
         <xsd:element ref="wife" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="child" minOccurs="0" maxOccurs="unbounded"/>
         <xsd:element ref="events"/>
+        <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
     </xsd:complexType>

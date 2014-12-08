@@ -54,7 +54,7 @@ object GenParser {
    **/
   def convertFile(filename : String) = {
     val content = parseFile(filename)
-    val printer = new PrettyPrinter(90, 4)
+    val printer = new PrettyPrinter(110, 4)
     printer.format(content.toXML)
   }
 

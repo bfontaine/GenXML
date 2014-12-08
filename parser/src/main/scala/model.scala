@@ -71,6 +71,9 @@ object GedcomConverters {
   implicit class GString(val s : String) extends XMLCustomTag {
     def toXML =
       <xml>{s}</xml>
+
+    def toSafeString =
+      Option(s).map(s => Text(s.toString))
   }
 
   /** Document **/
@@ -102,16 +105,23 @@ object GedcomConverters {
   implicit class GIndividual(val individual : Individual) extends XMLable {
 
     val CUSTOM_TAGS = List("title")
+    val SEX_NOT_PROVIDED = "N"
+
+    def parseSex(sex : StringWithCustomTags) = (sex || "").toString match {
+      case "F" | "M" | "U" => sex.toString
+      case _ => SEX_NOT_PROVIDED
+    }
 
     def toXML =
-      <individual id={individual.xref.toStringId}>
+      <individual id={individual.xref.toStringId}
+                  sex={ parseSex(individual.sex) }>
         { individual.names.toXML }
-        { if (individual.sex) <sex>{ individual.sex }</sex> }
         { individual.events.toXML }
         { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
         { individual.notes.toXML }
         { individual.familiesWhereChild.toXML }
         { individual.familiesWhereSpouse.toXML }
+        { if (individual.multimedia) individual.multimedia.toXML }
         {
           val sts = individual.customTags.asScala.toList
           sts.filter(s => CUSTOM_TAGS.contains(s.tag)).map(_.toXML)
@@ -141,7 +151,8 @@ object GedcomConverters {
           family.children.asScala.toList.map(ch =>
               <child xref={ch.xref.toStringId} />)
         }
-        { family.events.toXML }
+        { if (family.events) family.events.toXML }
+        { if (family.multimedia) family.multimedia.toXML }
       </family>
   }
 
@@ -250,6 +261,49 @@ object GedcomConverters {
       </notes>
   }
 
+  /** Multimedia **/
+
+  implicit class GMultimedias(val medias : JList[Multimedia]) extends XMLable {
+    def toXML =
+      <medias>
+        { medias.asScala.toList.map(_.toXML) }
+      </medias>
+  }
+
+  implicit class GMultimedia(val media : Multimedia) extends XMLable {
+    def toXML =
+      <media id={media.xref.toSafeString}>
+        <title>{media.embeddedTitle}</title>
+        { if (media.fileReferences) media.fileReferences.toXML }
+        { if (media.notes) media.notes.toXML }
+      </media>
+  }
+
+  implicit class GFileReferences(val refs : JList[FileReference]) extends XMLable {
+    def toXML =
+      <files>
+        { refs.asScala.toList.map(_.toXML) }
+      </files>
+  }
+
+  implicit class GFileReference(val ref : FileReference) extends XMLable {
+    def toXML =
+      <file format={ref.format.toSafeString}
+            type={ref.mediaType.toSafeString}
+            href={ref.referenceToFile.toSafeString match {
+              case None => None
+              case Some(Text(s)) =>
+                // some bad formatted files lead to references on multiple
+                // lines
+                Some(Text(s.split("\n")(0)))
+            }}
+            title={ref.title.toSafeString match {
+              // Some files errors lead to a title set to "TITL"
+              case Some(Text("TITL")) => None
+              case x => x
+            }} />
+  }
+
   /** Individual fields **/
 
   /** An XMLable {PersonalName} list **/
@@ -259,7 +313,7 @@ object GedcomConverters {
       if (n.isEmpty)
         <personalName/>
       else
-        // get only the first name
+        // get only the first name (≠ the firstname)
         names.asScala.toList.head.toXML
   }
 
@@ -273,13 +327,20 @@ object GedcomConverters {
 
   /** An XMLable {StringWithCustomTags} **/
   implicit class GCustomString(val s : StringWithCustomTags) extends XMLCustomTag {
-    def toXML =
-      new GString(if (s) s.toString; else "").toXML
+    override def toXML =
+      <xml>{toSafeString}</xml>
+
+    /**
+     * Convert this value into one that can be safely included in an XML
+     * document.
+     * This is the same as {GString#toSafeString} but they can’t be merged
+     **/
+    def toSafeString =
+      Option(s).map(s => Text(s.toString))
   }
 
   /** An XMLable {StringWithCustomTags} list **/
-  implicit class GCustomStrings(val ss : JList[StringWithCustomTags]) extends
-  XMLCustomTag {
+  implicit class GCustomStrings(val ss : JList[StringWithCustomTags]) extends XMLCustomTag {
     def toXML =
       this.toXML("string")
 

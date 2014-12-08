@@ -5,13 +5,12 @@
     <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!ELEMENT individual (personalName,sex?,events,urls?,notes?,familiesWhereChild,familiesWhereSpouse,title?)>
+  <!ELEMENT individual (personalName,events,urls?,notes,familiesWhereChild,familiesWhereSpouse,medias?,title?)>
     <!ATTLIST individual id ID #REQUIRED>
+    <!ATTLIST individual sex (F|M|U|N) #IMPLIED>
     <!ELEMENT personalName (#PCDATA)>
-    <!ELEMENT sex (#PCDATA)>
     <!ELEMENT urls (url*)>
       <!ELEMENT url (#PCDATA)>
-    <!ELEMENT notes (note*)>
     <!ELEMENT familiesWhereChild (familyWhereChild?)>
       <!ELEMENT familyWhereChild EMPTY>
         <!ATTLIST familyWhereChild xref IDREF #REQUIRED>
@@ -20,7 +19,7 @@
         <!ATTLIST familyWhereSpouse xref IDREF #REQUIRED>
 
 <!ELEMENT families (family*)>
-  <!ELEMENT family (husband?,wife?,child*,events)>
+  <!ELEMENT family (husband?,wife?,child*,events,medias?)>
     <!ATTLIST family id ID #REQUIRED>
     <!ELEMENT husband EMPTY>
       <!ATTLIST husband xref IDREF #REQUIRED>
@@ -28,6 +27,19 @@
       <!ATTLIST wife xref IDREF #REQUIRED>
     <!ELEMENT child EMPTY>
       <!ATTLIST child xref IDREF #REQUIRED>
+
+<!ELEMENT medias (media*)>
+  <!ELEMENT media (title,files?,notes?)>
+    <!ATTLIST media id ID #IMPLIED>
+    <!ELEMENT files (file*)>
+
+<!ELEMENT file EMPTY>
+  <!ATTLIST file format CDATA #IMPLIED>
+  <!ATTLIST file type CDATA #IMPLIED>
+  <!ATTLIST file href CDATA #IMPLIED>
+  <!ATTLIST file title CDATA #IMPLIED>
+
+<!ELEMENT notes (note*)>
 
 <!ELEMENT events (event*)>
   <!ELEMENT event (date,cause?,place?)>
