@@ -14,28 +14,12 @@
   <xsd:element name="infos">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="copyright" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="date" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="language" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="gedcomVersion" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="copyright" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="date" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="language" type="xsd:token" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="gedcomVersion" type="xsd:token" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
     </xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="copyright">
-    <xsd:complexType mixed="true"></xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="date">
-    <xsd:complexType mixed="true"></xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="language">
-    <xsd:complexType mixed="true"></xsd:complexType>
-  </xsd:element>
-
-  <xsd:element name="gedcomVersion">
-    <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
   <xsd:element name="individuals">
@@ -56,25 +40,22 @@
         <xsd:element ref="familiesWhereChild"/>
         <xsd:element ref="familiesWhereSpouse"/>
         <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="title" minOccurs="0" maxOccurs="1"/>
+        <xsd:element name="title" type="xsd:string" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
       <!-- TODO  enum{F, M, U, N} -->
-      <xsd:attribute name="sex" type="xsd:string" use="required"/>
+      <xsd:attribute name="sex" type="xsd:token" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="personalName">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="firstname" minOccurs="0" maxOccurs="1" />
-        <xsd:element ref="lastname" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="firstname" type="xsd:string" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="lastname" type="xsd:string" minOccurs="0" maxOccurs="1" />
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
-
-  <xsd:element name="firstname" type="xsd:string"/>
-  <xsd:element name="lastname" type="xsd:string"/>
 
   <xsd:element name="events">
     <xsd:complexType>
@@ -87,7 +68,7 @@
   <xsd:element name="event">
     <xsd:complexType>
         <!-- TODO enum + diff between individual & family events -->
-      <xsd:attribute name="type" type="xsd:string" use="required"/>
+      <xsd:attribute name="type" type="xsd:token" use="required"/>
       <xsd:attribute name="date" type="xsd:string"/>
       <xsd:attribute name="cause" type="xsd:string"/>
       <xsd:attribute name="place" type="xsd:string"/>
@@ -97,12 +78,10 @@
   <xsd:element name="urls">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="url" minOccurs="0" maxOccurs="unbounded"/>
+        <xsd:element name="url" type="xsd:token" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
     </xsd:complexType>
   </xsd:element>
-
-  <xsd:element name="url" type="xsd:string"/>
 
   <xsd:element name="medias">
     <xsd:complexType>
@@ -115,7 +94,7 @@
   <xsd:element name="media">
     <xsd:complexType>
       <xsd:sequence>
-        <xsd:element ref="title"/>
+        <xsd:element name="title" type="xsd:string"/>
         <xsd:element ref="files" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
@@ -133,9 +112,9 @@
 
   <xsd:element name="file">
     <xsd:complexType>
-      <xsd:attribute name="format" type="xsd:string"/>
-      <xsd:attribute name="type" type="xsd:string"/>
-      <xsd:attribute name="href" type="xsd:string"/>
+      <xsd:attribute name="format" type="xsd:token"/>
+      <xsd:attribute name="type" type="xsd:token"/>
+      <xsd:attribute name="href" type="xsd:token"/>
       <xsd:attribute name="title" type="xsd:string"/>
     </xsd:complexType>
   </xsd:element>
@@ -177,8 +156,6 @@
       <xsd:attribute name="xref" type="xsd:IDREF" use="required"/>
     </xsd:complexType>
   </xsd:element>
-
-  <xsd:element name="title" type="xsd:string"/>
 
   <xsd:element name="families">
     <xsd:complexType>
