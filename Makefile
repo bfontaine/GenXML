@@ -32,7 +32,7 @@ $(SRC_JAR): $(SRCS)
 $(EXE):
 	$(RM) $@
 	echo "#! $(SH)" >> $@
-	echo "java -jar $(JAR_DIR)/$(JAR) \$$1 \$$2" >> $@
+	echo "java -jar $(JAR_DIR)/$(JAR) \$$*" >> $@
 	chmod u+x $@
 
 tests: $(EXE) $(TESTS)

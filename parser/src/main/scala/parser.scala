@@ -71,14 +71,20 @@ object GenParser {
     writer.close()
   }
 
+  def printConvertedFile(filename : String) = println(convertFile(filename))
+
   def main(args : Array[String]) {
-
-    if (args.size <= 1) {
-      println("Usage:\n<program> <gedcom source> <xml target>")
-      System.exit(-1)
+    args.toList match {
+      // <program> abc.ged
+      case List(input) => printConvertedFile(input)
+      // <program> abc.ged -
+      case List(input, "-") => printConvertedFile(input)
+      // <program> abc.ged abc.xml
+      case List(input, output) => convertFile(input, output)
+      case _ =>
+        println("Usage:\n<program> <gedcom source> [<xml target>]")
+        System.exit(-1)
     }
-
-    convertFile(args(0), args(1))
   }
 
 }
