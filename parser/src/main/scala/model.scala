@@ -90,13 +90,18 @@ object GedcomConverters {
 
   /** An XMLable {Header} **/
   implicit class GHeader(val h : Header) extends XMLable {
-    def toXML =
+    def toXML = {
+      val copyrightLines = h.copyrightData.asScala.toList
+      val version = h.gedcomVersion.versionNumber
       <infos>
-        { h.copyrightData.asScala.toList.mkString("\n").toXML("copyright") }
-        { h.date.toXML("date") }
-        { h.language.toXML("language") }
-        { h.gedcomVersion.versionNumber.toString.toXML("gedcomVersion") }
+        { if (copyrightLines.size > 0)
+            copyrightLines.mkString("\n").toXML("copyright") }
+        { if (h.date) h.date.toXML("date") }
+        { if (h.language) h.language.toXML("language") }
+        { if (version)
+            version.toString.toXML("gedcomVersion") }
       </infos>
+    }
   }
 
   /** Individuals **/
@@ -197,20 +202,18 @@ object GedcomConverters {
   /** An XMLable {IndividualEvent} **/
   implicit class GIndividualEvent(val ev : IndividualEvent) extends XMLable {
     def toXML =
-      <event type={ev.`type`.title}>
-          <date>{ev.date}</date>
-          { if (ev.cause) <cause>{ev.cause}</cause> }
-          { if (ev.place) <place>{ev.place.placeName}</place> }
-      </event>
+      <event type={ev.`type`.title}
+             date={ev.date.toSafeString}
+             cause={ev.cause.toSafeString}
+             place={if (ev.place) Option(Text(ev.place.placeName)) else None}/>
   }
 
   /** An XMLable {FamilyEvent} **/
   implicit class GFamilyEvent(val ev : FamilyEvent) extends XMLable {
     def toXML =
-      <event type={ev.`type`.title}>
-          <date>{ev.date}</date>
-          { if (ev.place) <place>{ev.place.placeName}</place> }
-      </event>
+      <event type={ev.`type`.title}
+             date={ev.date.toSafeString}
+             place={if (ev.place) Option(Text(ev.place.placeName)) else None}/>
   }
 
   /** An XMLable {IndividualEventType} **/
@@ -328,7 +331,7 @@ object GedcomConverters {
   /** An XMLable {StringWithCustomTags} **/
   implicit class GCustomString(val s : StringWithCustomTags) extends XMLCustomTag {
     override def toXML =
-      <xml>{toSafeString}</xml>
+      <xml>{toSafeString.getOrElse("")}</xml>
 
     /**
      * Convert this value into one that can be safely included in an XML

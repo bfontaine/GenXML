@@ -38,9 +38,6 @@
     <xsd:complexType mixed="true"></xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="cause" type="xsd:string"/>
-  <xsd:element name="place" type="xsd:string"/>
-
   <xsd:element name="individuals">
     <xsd:complexType>
       <xsd:sequence>
@@ -79,13 +76,11 @@
 
   <xsd:element name="event">
     <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="date"/>
-        <xsd:element ref="cause" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="place" minOccurs="0" maxOccurs="1"/>
-      </xsd:sequence>
         <!-- TODO enum + diff between individual & family events -->
       <xsd:attribute name="type" type="xsd:string" use="required"/>
+      <xsd:attribute name="date" type="xsd:string"/>
+      <xsd:attribute name="cause" type="xsd:string"/>
+      <xsd:attribute name="place" type="xsd:string"/>
     </xsd:complexType>
   </xsd:element>
 
