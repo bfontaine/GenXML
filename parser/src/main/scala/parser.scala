@@ -19,8 +19,8 @@ object GenParser {
    * content without leading/trailing spaces nor empty lines
    * @param filename path
    **/
-  def readFile(filename : String) = {
-    val source = Source.fromFile(filename, "latin1")
+  def readFile(filename : String, encoding : String) = {
+    val source = Source.fromFile(filename, encoding)
     // remove {lead,trail}ing spaces as well as empty lines
     val content = "\\s*\n\\s+".r.replaceAllIn(source.mkString, "\n")
 
@@ -28,18 +28,46 @@ object GenParser {
   }
 
   /**
+   * Try to parse a file using different encodings. It'll return None if no
+   * encoding works, and an {Option[GedcomParser]} if it was able to parse the
+   * file.
+   **/
+  def tryToParseFile(filename : String, encodings : List[String]) : Option[GedcomParser] =
+    encodings match {
+      case Nil => None
+      case encoding :: encodings =>
+        val gp = new GedcomParser()
+        try {
+          gp.load(readFile(filename, encoding))
+          Some(gp)
+        } catch {
+          case e : Exception =>
+            // try again with the next encoding
+            tryToParseFile(filename, encodings)
+        }
+    }
+
+  def tryToParseFile(filename : String) : Option[GedcomParser] =
+    tryToParseFile(filename, List("utf-8", "latin1"))
+
+  /**
    * Parse a file and return a GEDCOM document
    * @param filename
    * @param verbose if true, parsing warnings & errors will be printed
    **/
   def parseFile(filename : String, verbose : Boolean) = {
-    val gp = new GedcomParser()
-    gp.load(readFile(filename))
-    if (verbose) {
-      gp.errors.asScala.toList.foreach(e => println("Error: " + e))
-      gp.warnings.asScala.toList.foreach(w => println("Warning: " + w))
+    tryToParseFile(filename) match {
+      case None =>
+        println("Error: cannot parse the file.")
+        System.exit(-1)
+        null // this is for the typer
+      case Some(gp) =>
+        if (verbose) {
+          gp.errors.asScala.toList.foreach(e => println("Error: " + e))
+          gp.warnings.asScala.toList.foreach(w => println("Warning: " + w))
+        }
+        gp.gedcom
     }
-    gp.gedcom
   }
 
   /**
