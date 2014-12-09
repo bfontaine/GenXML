@@ -31,7 +31,7 @@
     <xsl:template match="infos">
         <h2> Information sur le document gedcom </h2>
         <p> <bold>Date : </bold> <xsl:value-of select="date"/></p>
-        <p> <bold>Version gedcom : </bold> <xsl:value-of select="gedcomVersion"/></p> 
+        <p> <bold>Version gedcom : </bold> <xsl:value-of select="gedcomVersion"/></p>
     </xsl:template>
 
     <!-- Families -->
@@ -50,7 +50,7 @@
             </xsl:apply-templates>
         </table>
     </xsl:template>
-    
+
     <!-- family -->
     <xsl:template match="family">
         <tr>
@@ -58,7 +58,7 @@
             <!-- husband -->
             <td>
                 <xsl:choose>
-                    <xsl:when test="husband"> 
+                    <xsl:when test="husband">
                         <xsl:apply-templates select="husband"/>
                     </xsl:when>
                     <xsl:otherwise> - </xsl:otherwise>
@@ -67,7 +67,7 @@
             <!-- wife -->
             <td>
                 <xsl:choose>
-                    <xsl:when test="wife"> 
+                    <xsl:when test="wife">
                         <xsl:apply-templates select="wife"/>
                     </xsl:when>
                     <xsl:otherwise> - </xsl:otherwise>
@@ -75,7 +75,7 @@
             </td>
             <td>
                 <xsl:choose>
-                    <xsl:when test="child"> 
+                    <xsl:when test="child">
                         <ul>
                             <xsl:for-each select="child">
                                 <li>
@@ -89,7 +89,7 @@
             </td>
         </tr>
     </xsl:template>
-    
+
     <!-- Family attributes (husband, wife, child) -->
     <xsl:template match="husband | wife | child">
         <xsl:choose>
@@ -104,7 +104,7 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    
+
     <!-- Individuals -->
     <xsl:template match="individuals">
             <h2>Individual</h2>
@@ -115,7 +115,7 @@
 
     <!-- Individual -->
     <xsl:template match="individual">
-        <hr size="3"/>    
+        <hr size="3"/>
 
         <!-- individual attribute -->
         <xsl:element name="h3">
@@ -133,20 +133,22 @@
                 <xsl:otherwise> - </xsl:otherwise>
             </xsl:choose>
         </p>
-        
+
         <!-- individual events -->
         <xsl:apply-templates select="events"/>
 
         <!-- individual urls -->
         <!-- individual notes -->
         <!-- individual familiesWhereChild -->
-        <xsl:apply-templates select="familiesWhereChild/familyWhereChild"/>
+        <xsl:if test="familyWhereChild">
+            <xsl:apply-templates select="familyWhereChild"/>
+        </xsl:if>
         <!-- individual familiesWhereSpouse -->
         <xsl:if test="familiesWhereSpouse/familyWhereSpouse">
             <xsl:apply-templates select="familiesWhereSpouse"/>
-        </xsl:if> 
+        </xsl:if>
     </xsl:template>
-    
+
     <xsl:template match="familyWhereChild">
         <p>fils/fille de
             <!-- father link -->
@@ -162,7 +164,7 @@
             </xsl:choose>
         </p>
     </xsl:template>
-    
+
     <xsl:template match="familiesWhereSpouse">
         <table border="1" cellpadding="2" cellspacing="0">
             <caption>Enfant</caption>
@@ -176,14 +178,14 @@
             </xsl:apply-templates>
         </table>
     </xsl:template>
-    
+
     <xsl:template match="familyWhereSpouse">
-        <tr> 
+        <tr>
         <td><xsl:number value="position()" format="1"/></td>
         <!-- wife -->
         <td>
             <xsl:choose>
-                <xsl:when test="key('fam',@xref)/wife"> 
+                <xsl:when test="key('fam',@xref)/wife">
                     <xsl:apply-templates select="key('fam',@xref)/wife"/>
                 </xsl:when>
                 <xsl:otherwise> - </xsl:otherwise>
@@ -198,9 +200,9 @@
                 </xsl:for-each>
             </ul>
         </td>
-        </tr> 
+        </tr>
     </xsl:template>
-    
+
     <xsl:template match="events">
         <ul>
             <xsl:apply-templates select="event">
@@ -210,7 +212,7 @@
     </xsl:template>
 
     <xsl:template match="event">
-        <li> 
+        <li>
             <!-- type event -->
             <xsl:choose>
                 <xsl:when test="@type = 'birth'"> Née </xsl:when>
@@ -232,7 +234,7 @@
             </xsl:choose>
         </li>
     </xsl:template>
-    
+
     <xsl:template match="@date | @place | @cause">
         <xsl:choose>
             <xsl:when test=".">
