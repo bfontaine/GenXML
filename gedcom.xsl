@@ -36,8 +36,9 @@
 
     <!-- Families -->
     <xsl:template match="families">
+        <h2>Families</h2>
         <table border="1" cellpadding="2" cellspacing="0">
-            <caption><h2>Families</h2></caption>
+            <caption>Family</caption>
             <tr>
                 <th>Identifiant</th>
                 <th>Mari</th>
@@ -53,15 +54,34 @@
     <!-- family -->
     <xsl:template match="family">
         <tr>
-            <td><xsl:value-of select="@id"/></td>
+            <td><xsl:number value="position()" format="1"/></td>
             <td><xsl:apply-templates select="husband"/></td>
             <td><xsl:apply-templates select="wife"/></td>
             <td>
-            <xsl:for-each select="child">
-                (<xsl:value-of select="@xref"/>) <xsl:value-of select="key('indi',@xref)/personalName"/>
-            </xsl:for-each>
+                <ul>
+                    <xsl:for-each select="child">
+                        <li>
+                            <xsl:apply-templates select="."/>
+                        </li>
+                    </xsl:for-each>
+                </ul>
             </td>
         </tr>
+    </xsl:template>
+    
+    <!-- Family attributes (husband, wife, child) -->
+    <xsl:template match="husband | wife | child">
+        <xsl:choose>
+            <xsl:when test=".">
+                <xsl:element name="a">
+                    <xsl:attribute name="href">#<xsl:value-of select="@xref"/></xsl:attribute>
+                    <xsl:value-of select="key('indi',@xref)/personalName"/>
+                </xsl:element>
+            </xsl:when>
+            <xsl:otherwise>
+                 -
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
     
     <!-- Individuals -->
@@ -166,17 +186,4 @@
     </xsl:template>
 
 
-    <xsl:template match="husband | wife">
-        <xsl:choose>
-            <xsl:when test=".">
-                <xsl:element name="a">
-                    <xsl:attribute name="href">#<xsl:value-of select="@xref"/></xsl:attribute>
-                    <xsl:value-of select="key('indi',@xref)/personalName"/>
-                </xsl:element>
-            </xsl:when>
-            <xsl:otherwise>
-                 -
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
 </xsl:stylesheet>
