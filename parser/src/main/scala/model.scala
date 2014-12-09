@@ -112,8 +112,8 @@ object GedcomConverters {
     val CUSTOM_TAGS = List("title")
     val SEX_NOT_PROVIDED = "N"
 
-    def parseSex(sex : StringWithCustomTags) = (sex || "").toString match {
-      case "F" | "M" | "U" => sex.toString
+    def parseSex(sex : StringWithCustomTags) = Option(sex).map(_.toString) match {
+      case Some(v @ ("F" | "M" | "U")) => v
       case _ => SEX_NOT_PROVIDED
     }
 
