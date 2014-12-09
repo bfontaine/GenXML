@@ -20,7 +20,8 @@ __test_ged2xml() {
   xmllint --noout --dtdvalid gedcom.dtd $xml && echo "$ok"
   echo -n "  - XSD validation "
   xmllint --noout --schema gedcom.xsd $xml
-  #echo -n "  - XSLT -> HTML"
+  echo -n "  - XSLT -> HTML"
+  xsltproc gedcom.xsl $xml >/dev/null && echo "$ok"
 }
 
 for ged in sources/*.ged; do
