@@ -22,4 +22,17 @@ fichiers mal formatés. Notre convertisseur peut également lire des fichiers
 dans des encodages différents (l’un des exemples fournis pour le projet est en
 latin1 alors que les autres sont en utf-8).
 
+## Exécution
+
+Le convertisseur peut être compilé en une archive jar, inclue dans l’archive
+rendue pour le projet. À la racine du projet, exécutez `make` pour générer le
+jar (il faut avoir `scala` et `scala-sbt`) et `make tests` pour tester avec les
+fichiers fournis. Le Makefile génère également un script shell (`gedcom2xml`)
+qui exécute l’archive. Le convertisseur peut afficher le XML sur la sortie
+standard ou l’écrire dans un fichier :
+
+    ./gedcom2xml toto.ged > toto.xml
+    ./gedcom2xml toto.ged toto.xml
+
+
 [g4j]: http://gedcom4j.org/main/
