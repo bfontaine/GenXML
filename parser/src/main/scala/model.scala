@@ -124,7 +124,13 @@ object GedcomConverters {
         { individual.events.toXML }
         { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
         { individual.notes.toXML }
-        { individual.familiesWhereChild.toXML }
+        { individual.familiesWhereChild.asScala.toList match {
+            case fam :: _ =>
+              <familyWhereChild xref={fam.family.xref.toStringId} />
+            case _ =>
+              null
+          }
+        }
         { individual.familiesWhereSpouse.toXML }
         { if (individual.multimedia) individual.multimedia.toXML }
       </individual>
@@ -165,26 +171,12 @@ object GedcomConverters {
       </families>
   }
 
-  /** An XMLable {FamilyChild} list **/
-  implicit class GenFamiliesWhereChild(val fams : JList[FamilyChild]) extends XMLable {
-    def toXML = // TODO: use only one element, given that the list contains 0..1 elements?
-      <familiesWhereChild>
-        { fams.asScala.toList.map(_.toXML) }
-      </familiesWhereChild>
-  }
-
   /** An XMLable {FamilySpouse} list **/
   implicit class GenFamiliesWhereSpouse(val fams : JList[FamilySpouse]) extends XMLable {
     def toXML =
       <familiesWhereSpouse>
         { fams.asScala.toList.map(_.toXML) }
       </familiesWhereSpouse>
-  }
-
-  /** An XMLable {FamilyChild} **/
-  implicit class GenFamilyWhereChild(val fam : FamilyChild) extends XMLable {
-    def toXML =
-      <familyWhereChild xref={fam.family.xref.toStringId} />
   }
 
   /** An XMLable {FamilySpouse} **/

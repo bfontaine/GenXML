@@ -43,10 +43,10 @@
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="personalName"/>
-        <xsd:element name="events" type="individualEvents" />
+        <xsd:element name="events" type="individualEvents"/>
         <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
-        <xsd:element ref="familiesWhereChild"/>
+        <xsd:element ref="familyWhereChild" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="familiesWhereSpouse"/>
         <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
@@ -195,14 +195,6 @@
   </xsd:element>
 
   <xsd:element name="note" type="xsd:string"/>
-
-  <xsd:element name="familiesWhereChild">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="familyWhereChild" minOccurs="0" maxOccurs="unbounded"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
 
   <xsd:element name="familyWhereChild">
     <xsd:complexType>

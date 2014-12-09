@@ -5,7 +5,7 @@
     <!ELEMENT gedcomVersion (#PCDATA)>
 
 <!ELEMENT individuals (individual*)>
-  <!ELEMENT individual (personalName,events,urls?,notes,familiesWhereChild,familiesWhereSpouse,medias?)>
+  <!ELEMENT individual (personalName,events,urls?,notes,familyWhereChild?,familiesWhereSpouse,medias?)>
     <!ATTLIST individual id ID #REQUIRED>
     <!ATTLIST individual sex (F|M|U|N) #IMPLIED>
     <!ELEMENT personalName (firstname?,lastname?,title?)>
@@ -13,9 +13,8 @@
       <!ELEMENT lastname (#PCDATA)>
     <!ELEMENT urls (url*)>
       <!ELEMENT url (#PCDATA)>
-    <!ELEMENT familiesWhereChild (familyWhereChild?)>
-      <!ELEMENT familyWhereChild EMPTY>
-        <!ATTLIST familyWhereChild xref IDREF #REQUIRED>
+    <!ELEMENT familyWhereChild EMPTY>
+      <!ATTLIST familyWhereChild xref IDREF #REQUIRED>
     <!ELEMENT familiesWhereSpouse (familyWhereSpouse*)>
       <!ELEMENT familyWhereSpouse EMPTY>
         <!ATTLIST familyWhereSpouse xref IDREF #REQUIRED>
