@@ -89,14 +89,14 @@
         <!-- test if sex exist -->
         <p><bold>Sexe :</bold>
             <xsl:choose>
-                <xsl:when test="@sex = 'H'">
+                <xsl:when test="@sex = 'M'">
                     Homme
                 </xsl:when>
                 <xsl:when test="@sex = 'F'">
                     Femme
                 </xsl:when>
                 <xsl:when test="@sex = 'U'">
-                    Inconnu <xsl:value-of select="@sex"/>
+                    Inconnu
                 </xsl:when>
                 <xsl:when test="@sex = 'N'">
                     -
