@@ -30,11 +30,20 @@
     </xsd:complexType>
   </xsd:element>
 
+  <xsd:simpleType name="sexType">
+    <xsd:restriction base="xsd:token">
+      <xsd:enumeration value="F"/>
+      <xsd:enumeration value="M"/>
+      <xsd:enumeration value="U"/>
+      <xsd:enumeration value="N"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
   <xsd:element name="individual">
     <xsd:complexType>
       <xsd:sequence>
         <xsd:element ref="personalName"/>
-        <xsd:element ref="events"/>
+        <xsd:element name="events" type="individualEvents" />
         <xsd:element ref="urls" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="notes" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="familiesWhereChild"/>
@@ -42,8 +51,7 @@
         <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
-      <!-- TODO  enum{F, M, U, N} see http://stackoverflow.com/a/8926259/735926 -->
-      <xsd:attribute name="sex" type="xsd:token" use="required"/>
+      <xsd:attribute name="sex" type="sexType" use="required"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -57,24 +65,82 @@
     </xsd:complexType>
   </xsd:element>
 
-  <xsd:element name="events">
-    <xsd:complexType>
-      <xsd:sequence>
-        <xsd:element ref="event" minOccurs="0" maxOccurs="unbounded"/>
-      </xsd:sequence>
-    </xsd:complexType>
-  </xsd:element>
+  <xsd:complexType name="individualEvents">
+    <xsd:sequence>
+      <xsd:element name="event" type="individualEvent" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
-  <xsd:element name="event">
-    <xsd:complexType>
-      <!-- TODO enum + diff between individual & family events
-           see http://stackoverflow.com/a/8926259/735926 -->
-      <xsd:attribute name="type" type="xsd:token" use="required"/>
-      <xsd:attribute name="date" type="xsd:string"/>
-      <xsd:attribute name="cause" type="xsd:string"/>
-      <xsd:attribute name="place" type="xsd:string"/>
-    </xsd:complexType>
-  </xsd:element>
+  <xsd:complexType name="familyEvents">
+    <xsd:sequence>
+      <xsd:element name="event" type="familyEvent" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="individualEventType">
+    <xsd:restriction base="xsd:token">
+      <xsd:enumeration value="adoption"/>
+      <xsd:enumeration value="arrival"/>
+      <xsd:enumeration value="baptism"/>
+      <xsd:enumeration value="bar_mitzvah"/>
+      <xsd:enumeration value="bas_mitzvah"/>
+      <xsd:enumeration value="birth"/>
+      <xsd:enumeration value="blessing"/>
+      <xsd:enumeration value="burial"/>
+      <xsd:enumeration value="census"/>
+      <xsd:enumeration value="christening"/>
+      <xsd:enumeration value="confirmation"/>
+      <xsd:enumeration value="cremation"/>
+      <xsd:enumeration value="death"/>
+      <xsd:enumeration value="emigration"/>
+      <xsd:enumeration value="event"/>
+      <xsd:enumeration value="first_communion"/>
+      <xsd:enumeration value="immigration"/>
+      <xsd:enumeration value="naturalization"/>
+      <xsd:enumeration value="ordination"/>
+      <xsd:enumeration value="probate"/>
+      <xsd:enumeration value="retirement"/>
+      <xsd:enumeration value="will"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="familyEventType">
+    <xsd:restriction base="xsd:token">
+      <xsd:enumeration value="annulment"/>
+      <xsd:enumeration value="census"/>
+      <xsd:enumeration value="divorce"/>
+      <xsd:enumeration value="divorce_filed"/>
+      <xsd:enumeration value="engagement"/>
+      <xsd:enumeration value="event"/>
+      <xsd:enumeration value="marriage"/>
+      <xsd:enumeration value="marriage_banner"/>
+      <xsd:enumeration value="marriage_contract"/>
+      <xsd:enumeration value="marriage_license"/>
+      <xsd:enumeration value="marriage_settlement"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="baseEvent">
+    <xsd:attribute name="date" type="xsd:string"/>
+    <xsd:attribute name="cause" type="xsd:string"/>
+    <xsd:attribute name="place" type="xsd:string"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="individualEvent">
+    <xsd:complexContent>
+      <xsd:extension base="baseEvent">
+        <xsd:attribute name="type" type="individualEventType"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="familyEvent">
+    <xsd:complexContent>
+      <xsd:extension base="baseEvent">
+        <xsd:attribute name="type" type="familyEventType"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
 
   <xsd:element name="urls">
     <xsd:complexType>
@@ -172,7 +238,7 @@
         <xsd:element ref="husband" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="wife" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="child" minOccurs="0" maxOccurs="unbounded"/>
-        <xsd:element ref="events"/>
+        <xsd:element name="events" type="familyEvents" />
         <xsd:element ref="medias" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
       <xsd:attribute name="id" type="xsd:ID" use="required"/>
