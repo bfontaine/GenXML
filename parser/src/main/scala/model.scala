@@ -109,17 +109,17 @@ object GedcomConverters {
   /** An XMLable {Individual} **/
   implicit class GIndividual(val individual : Individual) extends XMLable {
 
-    val CUSTOM_TAGS = List("title")
     val SEX_NOT_PROVIDED = "N"
 
-    def parseSex(sex : StringWithCustomTags) = Option(sex).map(_.toString) match {
-      case Some(v @ ("F" | "M" | "U")) => v
-      case _ => SEX_NOT_PROVIDED
-    }
+    def parseSex(sex : StringWithCustomTags) =
+      Option(sex).map(_.toString) match {
+        case Some(v @ ("F" | "M" | "U")) => v
+        case _ => SEX_NOT_PROVIDED
+      }
 
     def toXML =
       <individual id={individual.xref.toStringId}
-                  sex={ parseSex(individual.sex) }>
+                  sex={parseSex(individual.sex)}>
         { individual.names.toXML }
         { individual.events.toXML }
         { if (individual.wwwUrls) individual.wwwUrls.toXML("url") }
@@ -127,10 +127,6 @@ object GedcomConverters {
         { individual.familiesWhereChild.toXML }
         { individual.familiesWhereSpouse.toXML }
         { if (individual.multimedia) individual.multimedia.toXML }
-        {
-          val sts = individual.customTags.asScala.toList
-          sts.filter(s => CUSTOM_TAGS.contains(s.tag)).map(_.toXML)
-        }
       </individual>
   }
 
@@ -322,15 +318,14 @@ object GedcomConverters {
 
   /** An XMLable {PersonalName} **/
   implicit class GPersoName(val name : PersonalName) extends XMLable {
-    val NAME_REGEX = "(.*?)\\s+/(.*)/".r
-
-    def toXML = NAME_REGEX.findFirstMatchIn(name.basic) match {
-      case None => <personalName/>
-      case Some(m) =>
-        <personalName>
-          <firstname>{m.group(1)}</firstname>
-          <lastname>{m.group(2)}</lastname>
-        </personalName>
+    def toXML = {
+      val parts = name.basic.split("/")
+      val size = parts.size
+      <personalName>
+      { if (size > 0 && parts(0) != "") parts(0).toXML("firstname") }
+      { if (size > 1 && parts(1) != "") parts(1).toXML("lastname") }
+      { if (size > 2) parts(2).toXML("title") }
+      </personalName>
     }
   }
 
