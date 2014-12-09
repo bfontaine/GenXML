@@ -2,15 +2,18 @@
 set -e
 
 EXE=./gedcom2xml
-TESTS=xml
+XML=xml
+HTML=html
 
-mkdir -p $TESTS
+mkdir -p $XML
+mkdir -p $HTML
 
 __test_ged2xml() {
   local ged=$1
   local filename=${ged##*/}
-  local base=$TESTS/${filename%%.*}
-  local xml=${base}.xml
+  local basename=${filename%%.*}
+  local xml=$XML/${basename}.xml
+  local html=$HTML/${basename}.html
   local ok=" [OK]"
 
   echo "* $filename"
@@ -21,7 +24,7 @@ __test_ged2xml() {
   echo -n "  - XSD validation "
   xmllint --noout --schema gedcom.xsd $xml
   echo -n "  - XSLT -> HTML"
-  xsltproc gedcom.xsl $xml >/dev/null && echo "$ok"
+  xsltproc gedcom.xsl $xml >$html && echo "$ok"
 }
 
 for ged in sources/*.ged; do

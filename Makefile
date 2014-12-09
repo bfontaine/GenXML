@@ -27,7 +27,7 @@ RM=rm -f
 RM_R=rm -rf
 SH=$(shell which sh)
 
-.PHONY: all clean mrproper tests
+.PHONY: all clean mrproper tests tarball
 
 all: $(JAR) $(EXE)
 
@@ -40,7 +40,7 @@ $(SRC_JAR): $(SRCS)
 
 $(EXE):
 	$(RM) $@
-	echo "#! $(SH)" >> $@
+	echo "#! $(SH)" > $@
 	echo "java -jar $(JAR_DIR)/$(JAR) \$$*" >> $@
 	chmod u+x $@
 
