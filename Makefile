@@ -57,8 +57,9 @@ tarball: $(SRC_JAR) tests
 	$(RM_R) $(SRC)/target $(SRC)/project/project $(SRC)/project/target && \
 	pandoc docs/rapport.md -o rapport.pdf && \
 	$(RM_R) docs && \
-	popd && \
-	tar czvf $(TARBALL) $(SUBMISSION)
+	pushd $(TMP) && \
+	tar czvf $(SUBMISSION_NAME).tgz $(SUBMISSION_NAME) && \
+	popd && popd
 
 clean:
 	$(RM) $(EXE) $(JAR)
