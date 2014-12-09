@@ -53,7 +53,9 @@ tarball: $(SRC_JAR) tests
 	$(RM_R) $(SUBMISSION) && \
 	$(CP) -r . $(SUBMISSION) && \
 	pushd $(SUBMISSION) && \
-	$(RM_R) .git .DS_Store .*.swp .*.swo *~ README.md && \
+	find . -name '.*.swp' -delete && \
+	find . -name '*~' -delete && \
+	$(RM_R) .git .DS_Store README.md && \
 	$(RM_R) $(SRC)/target $(SRC)/project/project $(SRC)/project/target && \
 	pandoc docs/rapport.md -o rapport.pdf && \
 	$(RM_R) docs && \
