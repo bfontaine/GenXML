@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-    <xsl:output method="html" encoding="latin1" indent="yes"/>
+    <xsl:output method="html" encoding="utf-8" indent="yes"/>
 
     <xsl:key name="indi" match="document/individuals/individual" use="@id"/>
     <xsl:key name="fam" match="document/families/family" use="@id"/>
@@ -55,16 +55,37 @@
     <xsl:template match="family">
         <tr>
             <td><xsl:number value="position()" format="1"/></td>
-            <td><xsl:apply-templates select="husband"/></td>
-            <td><xsl:apply-templates select="wife"/></td>
+            <!-- husband -->
             <td>
-                <ul>
-                    <xsl:for-each select="child">
-                        <li>
-                            <xsl:apply-templates select="."/>
-                        </li>
-                    </xsl:for-each>
-                </ul>
+                <xsl:choose>
+                    <xsl:when test="husband"> 
+                        <xsl:apply-templates select="husband"/>
+                    </xsl:when>
+                    <xsl:otherwise> - </xsl:otherwise>
+                </xsl:choose>
+            </td>
+            <!-- wife -->
+            <td>
+                <xsl:choose>
+                    <xsl:when test="wife"> 
+                        <xsl:apply-templates select="wife"/>
+                    </xsl:when>
+                    <xsl:otherwise> - </xsl:otherwise>
+                </xsl:choose>
+            </td>
+            <td>
+                <xsl:choose>
+                    <xsl:when test="child"> 
+                        <ul>
+                            <xsl:for-each select="child">
+                                <li>
+                                    <xsl:apply-templates select="."/>
+                                </li>
+                            </xsl:for-each>
+                        </ul>
+                    </xsl:when>
+                    <xsl:otherwise> - </xsl:otherwise>
+                </xsl:choose>
             </td>
         </tr>
     </xsl:template>
@@ -121,17 +142,63 @@
         <!-- individual familiesWhereChild -->
         <xsl:apply-templates select="familiesWhereChild/familyWhereChild"/>
         <!-- individual familiesWhereSpouse -->
+        <xsl:if test="familiesWhereSpouse/familyWhereSpouse">
+            <xsl:apply-templates select="familiesWhereSpouse"/>
+        </xsl:if> 
     </xsl:template>
     
     <xsl:template match="familyWhereChild">
         <p>fils/fille de
             <!-- father link -->
-            <xsl:apply-templates select="key('fam',@xref)/husband"/>
+            <xsl:choose>
+                <xsl:when test="key('fam',@xref)/husband"><xsl:apply-templates select="key('fam',@xref)/husband"/> </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
+            </xsl:choose>
             et
             <!-- mother link -->
-            <xsl:apply-templates select="key('fam',@xref)/wife"/>
+            <xsl:choose>
+                <xsl:when test="key('fam',@xref)/wife"><xsl:apply-templates select="key('fam',@xref)/wife"/> </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
+            </xsl:choose>
         </p>
-
+    </xsl:template>
+    
+    <xsl:template match="familiesWhereSpouse">
+        <table border="1" cellpadding="2" cellspacing="0">
+            <caption>Enfant</caption>
+            <tr>
+                <th>Famille</th>
+                <th>Femme</th>
+                <th>Enfant</th>
+            </tr>
+            <xsl:apply-templates select="familyWhereSpouse">
+                <xsl:sort select="." order="ascending"/>
+            </xsl:apply-templates>
+        </table>
+    </xsl:template>
+    
+    <xsl:template match="familyWhereSpouse">
+        <tr> 
+        <td><xsl:number value="position()" format="1"/></td>
+        <!-- wife -->
+        <td>
+            <xsl:choose>
+                <xsl:when test="key('fam',@xref)/wife"> 
+                    <xsl:apply-templates select="key('fam',@xref)/wife"/>
+                </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
+            </xsl:choose>
+        </td>
+        <td>
+            <ul>
+                <xsl:for-each select="key('fam',@xref)/child">
+                    <li>
+                        <xsl:apply-templates select="."/>
+                    </li>
+                </xsl:for-each>
+            </ul>
+        </td>
+        </tr> 
     </xsl:template>
     
     <xsl:template match="events">
@@ -144,22 +211,25 @@
 
     <xsl:template match="event">
         <li> 
+            <!-- type event -->
             <xsl:choose>
-                <xsl:when test="@type = 'birth'">
-                    Née le 
-                </xsl:when>
-                <xsl:when test="@type = 'death'">
-                    Mort le
-                </xsl:when>
-                <xsl:when test="@type = 'marriage'">
-                    Marié le
-                </xsl:when>
-                <xsl:otherwise>
-                    - 
-                </xsl:otherwise>
+                <xsl:when test="@type = 'birth'"> Née </xsl:when>
+                <xsl:when test="@type = 'death'"> Mort </xsl:when>
+                <xsl:when test="@type = 'marriage'"> Marié </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
             </xsl:choose>
-            <xsl:value-of select="@date"/> à
-            <xsl:value-of select="@place"/>
+            <!-- date event -->
+            le
+            <xsl:choose>
+                <xsl:when test="@date"> <xsl:value-of select="@date"/> </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
+            </xsl:choose>
+            <!-- place event -->
+            à
+            <xsl:choose>
+                <xsl:when test="@place"> <xsl:value-of select="@place"/> </xsl:when>
+                <xsl:otherwise> - </xsl:otherwise>
+            </xsl:choose>
         </li>
     </xsl:template>
     
@@ -184,6 +254,5 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-
 
 </xsl:stylesheet>
