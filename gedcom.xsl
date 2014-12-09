@@ -31,7 +31,7 @@
     <xsl:template match="infos">
         <h2> Information sur le document gedcom </h2>
         <p> <bold>Date : </bold> <xsl:value-of select="date"/></p>
-        <p> <bold>Version gedcom : </bold> <xsl:value-of select="date"/></p> 
+        <p> <bold>Version gedcom : </bold> <xsl:value-of select="gedcomVersion"/></p> 
     </xsl:template>
 
     <!-- Families -->
