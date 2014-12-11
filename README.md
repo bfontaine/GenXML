@@ -4,8 +4,6 @@ Gedcom to XML converter (school project)
 
 ## Build
 
-    cd parser
-    sbt compile
+    make
 
-    # build a jar
-    sbt one-jar
+You’ll need Scala and `sbt`.
